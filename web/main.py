@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException, UploadFile, File
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from datetime import datetime
 from typing import List, Optional
@@ -26,6 +27,15 @@ if not SUPABASE_URL or not SUPABASE_KEY:
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 app = FastAPI()
+
+# Add CORS middleware to allow frontend to communicate with backend
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173", "http://localhost:3000"],  # Frontend dev server
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 # Event model
@@ -56,6 +66,56 @@ class FrameAnalysisResponse(BaseModel):
 def health():
     """Health check endpoint"""
     return {"status": "ok"}
+
+
+@app.get("/anomalies")
+def get_anomalies(limit: Optional[int] = 50):
+    """
+    Get anomaly events (alias for /events endpoint).
+    Used by the frontend AnomalyLog component.
+    """
+    return get_events(limit=limit)
+
+
+class ControlCommand(BaseModel):
+    command: str
+
+
+@app.post("/control")
+def camera_control(command: ControlCommand):
+    """
+    Handle camera control commands from the frontend.
+
+    Commands:
+    - toggle_lock: Toggle auto-tracking on/off
+    - center: Center the camera servos
+    - pan_left, pan_right: Pan camera left or right
+    - tilt_up, tilt_down: Tilt camera up or down
+    """
+    # This is a placeholder - you'll need to integrate with your sentry system
+    # For now, just acknowledge the command
+    print(f"[CONTROL] Received command: {command.command}")
+
+    # TODO: Send command to the sentry system via socket/queue/shared state
+    # For example, you could use Redis, a message queue, or a shared file
+
+    return {"status": "success", "command": command.command}
+
+
+@app.get("/video_feed")
+def video_feed():
+    """
+    Stream video feed from the camera.
+    This is a placeholder - you'll need to implement actual video streaming.
+
+    For MJPEG streaming, you would use StreamingResponse with a generator function.
+    """
+    # TODO: Implement video streaming from the sentry camera
+    # Example using StreamingResponse:
+    # from fastapi.responses import StreamingResponse
+    # return StreamingResponse(generate_frames(), media_type="multipart/x-mixed-replace; boundary=frame")
+
+    return {"status": "not_implemented", "message": "Video streaming endpoint - to be implemented"}
 
 
 @app.get("/events", response_model=List[Event])

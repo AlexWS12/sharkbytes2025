@@ -34,3 +34,8 @@ python-dotenv
 
 # Supabase module
 supabase
+
+# FastAPI Web Framework
+fastapi
+uvicorn[standard]
+python-multipart  # For file uploads
