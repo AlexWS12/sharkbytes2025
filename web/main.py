@@ -35,6 +35,7 @@ class Event(BaseModel):
     event_type: str
     description: str
     severity: str
+    image_url: Optional[str] = None
 
 
 class EventCreate(BaseModel):
@@ -111,7 +112,7 @@ def create_event(event: EventCreate):
 async def analyze_frame(file: UploadFile = File(...)):
     """
     Receive a frame from the sentry system, analyze it with Gemini Vision,
-    and store the analysis result in Supabase.
+    store the image in Supabase Storage, and store the analysis result in Supabase.
 
     Parameters:
     - file: Image file (JPEG, PNG, etc.)
@@ -148,13 +149,31 @@ async def analyze_frame(file: UploadFile = File(...)):
         elif any(keyword in analysis_lower for keyword in ["danger", "threat", "emergency", "critical"]):
             severity = "critical"
 
+        # Upload image to Supabase Storage
+        timestamp = datetime.now()
+        timestamp_str = timestamp.isoformat()
+
+        # Create a unique filename with timestamp
+        file_extension = os.path.splitext(file.filename)[1] if file.filename else ".jpg"
+        storage_filename = f"frame_{timestamp.strftime('%Y%m%d_%H%M%S')}_{timestamp.microsecond}{file_extension}"
+
+        # Upload to Supabase Storage bucket using the content we already read
+        supabase.storage.from_("security-frames").upload(
+            path=storage_filename,
+            file=content,
+            file_options={"content-type": file.content_type or "image/jpeg"}
+        )
+
+        # Get public URL for the uploaded image
+        image_url = supabase.storage.from_("security-frames").get_public_url(storage_filename)
+
         # Store the analysis as an event in Supabase
-        timestamp = datetime.now().isoformat()
         event_data = {
             "event_type": "vision_analysis",
             "description": analysis_text,
             "severity": severity,
-            "timestamp": timestamp
+            "timestamp": timestamp_str,
+            "image_url": image_url
         }
 
         db_response = supabase.table("events").insert(event_data).execute()
@@ -167,7 +186,7 @@ async def analyze_frame(file: UploadFile = File(...)):
 
         return FrameAnalysisResponse(
             event_id=event_id,
-            timestamp=timestamp,
+            timestamp=timestamp_str,
             analysis=analysis_text,
             severity=severity,
             status="success"

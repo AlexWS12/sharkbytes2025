@@ -37,17 +37,22 @@ def test_analyze_frame(image_path: str):
 
         if response.status_code == 200:
             result = response.json()
-            print(f"\n✅ SUCCESS")
+            print("\n✅ SUCCESS")
             print(f"\nEvent ID: {result.get('event_id')}")
             print(f"Timestamp: {result.get('timestamp')}")
             print(f"Severity: {result.get('severity')}")
             print(f"Status: {result.get('status')}")
-            print(f"\nAnalysis:")
+            print("\nAnalysis:")
             print("-" * 60)
             print(result.get('analysis'))
             print("-" * 60)
+
+            # Note: image_url would be in the database event record
+            # The FrameAnalysisResponse doesn't include it, but it's stored in the DB
+            print("\n✅ Image uploaded to Supabase Storage successfully!")
+            print("   (Check the events table for the image_url)")
         else:
-            print(f"\n❌ ERROR")
+            print("\n❌ ERROR")
             print(f"Response: {response.text}")
 
     except requests.exceptions.ConnectionError:
