@@ -1,18 +1,4 @@
 #!/usr/bin/env python3
-"""
-Jetson Person-Tracking Sentry Turret
-=====================================
-Uses YOLO for person detection, DeepSORT for tracking, and PCA9685 servo driver
-to keep a tracked person centered in the camera frame.
-
-Hardware:
-- Jetson device
-- USB Camera (/dev/video0)
-- PCA9685 Servo Driver (I2C address 0x40)
-- 2 Servos: Pan (channel 0) and Tilt (channel 1)
-
-Date: November 8, 2025
-"""
 
 import cv2
 import numpy as np
