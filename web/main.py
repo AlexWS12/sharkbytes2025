@@ -1,14 +1,19 @@
+import os, sys
+sys.path.append(os.path.dirname(__file__))  # ✅ makes local imports work
+
 from fastapi import FastAPI, HTTPException, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from datetime import datetime
 from typing import List, Optional
 from pydantic import BaseModel
-import os
 from dotenv import load_dotenv
 from supabase import create_client, Client
 import tempfile
-import sys
+
+# import alert function
+from alerts import send_discord_alert
+
 
 # Add gemini module to path
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
@@ -146,18 +151,21 @@ def get_events(limit: Optional[int] = 10, event_type: Optional[str] = None):
 
 @app.post("/events", response_model=Event)
 def create_event(event: EventCreate):
-    """
-    Create a new security event.
-
-    This endpoint allows the sentry system to log events to the database.
-    """
     try:
-        # Add timestamp
         event_data = event.model_dump()
         event_data["timestamp"] = datetime.now().isoformat()
 
         # Insert into Supabase
         response = supabase.table("events").insert(event_data).execute()
+
+        # Send Discord alert (only warnings/critical)
+        if event_data["severity"] in ["warning", "critical"]:
+            send_discord_alert(
+                event_type=event_data["event_type"],
+                description=event_data["description"],
+                severity=event_data["severity"],
+                image_url=event_data.get("image_url")
+            )
 
         if response.data:
             return response.data[0]
@@ -166,6 +174,7 @@ def create_event(event: EventCreate):
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error creating event: {str(e)}")
+
 
 
 @app.post("/analyze-frame", response_model=FrameAnalysisResponse)
