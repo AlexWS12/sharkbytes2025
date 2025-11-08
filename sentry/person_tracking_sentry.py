@@ -11,8 +11,7 @@ Hardware:
 - PCA9685 Servo Driver (I2C address 0x40)
 - 2 Servos: Pan (channel 0) and Tilt (channel 1)
 
-Author: AI Assistant
-Date: November 7, 2025
+Date: November 8, 2025
 """
 
 import cv2
@@ -36,8 +35,8 @@ SKIP_FRAMES = 1  # Process every frame (1=no skipping) - was 2
 # Servo settings
 PCA9685_ADDRESS = 0x40
 PCA9685_CHANNELS = 16
-PAN_CHANNEL = 0
-TILT_CHANNEL = 1
+PAN_CHANNEL = 2
+TILT_CHANNEL = 3
 
 # Servo angle limits (degrees)
 PAN_MIN = 10

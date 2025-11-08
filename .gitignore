@@ -11,6 +11,7 @@ __pycache__/
 venv/
 env/
 ENV/
+sentry_env/
 
 # Environment variables / secrets
 .env
