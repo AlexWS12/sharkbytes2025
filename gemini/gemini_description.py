@@ -42,21 +42,36 @@ def analyze_security_image(image_path):
         img = Image.open(image_path)
         
         # Create a security-focused prompt
-        prompt = """Analyze this security camera image and provide:
-1. A brief description of what you see
-2. Number of people detected
-3. Any suspicious activities or items
-4. Overall security assessment (Normal/Alert/Warning)
-"""
+        prompt = """Analyze this security camera image and respond in this exact format:
+DESCRIPTION: [One sentence describing what you see]
+SEVERITY: [info/warning/critical]
+
+Use 'info' for normal activities, 'warning' for suspicious activities, and 'critical' for immediate threats or emergencies."""
 
         # Generate content
         response = model.generate_content([prompt, img])
+
+        # Parse the response to extract description and severity
+        response_text = response.text.strip()
+        description = ""
+        severity = "info"
+
+        # Parse structured response
+        lines = response_text.split('\n')
+        for line in lines:
+            if line.startswith('DESCRIPTION:'):
+                description = line.replace('DESCRIPTION:', '').strip()
+            elif line.startswith('SEVERITY:'):
+                severity_value = line.replace('SEVERITY:', '').strip().lower()
+                if severity_value in ['info', 'warning', 'critical']:
+                    severity = severity_value
         
         # Prepare result
         result = {
             "image": os.path.basename(image_path),
             "timestamp": datetime.now().isoformat(),
-            "analysis": response.text,
+            "analysis": description if description else response.text,
+            "severity": severity,
             "status": "success"
         }
         

@@ -31,7 +31,7 @@ app = FastAPI()
 # Add CORS middleware to allow frontend to communicate with backend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://localhost:3000"],  # Frontend dev server
+    allow_origins=["http://localhost:5173", "http://localhost:5174", "http://localhost:3000"],  # Frontend dev server
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -200,14 +200,17 @@ async def analyze_frame(file: UploadFile = File(...)):
 
         analysis_text = result["analysis"]
 
-        # Determine severity based on keywords in the analysis
-        severity = "info"
-        analysis_lower = analysis_text.lower()
+        # Use severity from Gemini analysis, with fallback to keyword matching
+        severity = result.get("severity", "info")
 
-        if any(keyword in analysis_lower for keyword in ["alert", "suspicious", "unusual", "concern"]):
-            severity = "warning"
-        elif any(keyword in analysis_lower for keyword in ["danger", "threat", "emergency", "critical"]):
-            severity = "critical"
+        # Fallback: if severity not provided by Gemini, use keyword matching
+        if not severity or severity not in ["info", "warning", "critical"]:
+            severity = "info"
+            analysis_lower = analysis_text.lower()
+            if any(keyword in analysis_lower for keyword in ["alert", "suspicious", "unusual", "concern"]):
+                severity = "warning"
+            elif any(keyword in analysis_lower for keyword in ["danger", "threat", "emergency", "critical"]):
+                severity = "critical"
 
         # Upload image to Supabase Storage
         timestamp = datetime.now()

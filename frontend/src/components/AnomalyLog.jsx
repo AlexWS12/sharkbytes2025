@@ -3,46 +3,34 @@ import { useState, useEffect } from 'react'
 function AnomalyLog() {
   const [anomalies, setAnomalies] = useState([])
   const [loading, setLoading] = useState(true)
+  const [selectedAnomaly, setSelectedAnomaly] = useState(null)
 
   // API endpoint - adjust to match your backend
-  const API_BASE = 'http://localhost:5000'
+  const API_BASE = 'http://localhost:8000'
 
   // Fetch anomalies from the database
   useEffect(() => {
     const fetchAnomalies = async () => {
       try {
-        const response = await fetch(`${API_BASE}/anomalies`)
-        if (!response.ok) throw new Error('Failed to fetch anomalies')
+        const response = await fetch(`${API_BASE}/events?limit=50`)
+        if (!response.ok) throw new Error('Failed to fetch events')
         const data = await response.json()
-        setAnomalies(data)
+
+        // Transform backend data to match frontend expectations
+        const transformedData = data.map(event => ({
+          id: event.id,
+          timestamp: event.timestamp,
+          description: event.description,
+          severity: event.severity, // info/warning/critical from backend
+          imageUrl: event.image_url
+        }))
+
+        setAnomalies(transformedData)
         setLoading(false)
       } catch (error) {
         console.error('Error fetching anomalies:', error)
         setLoading(false)
-        // Use mock data for testing when backend is not available
-        setAnomalies([
-          {
-            id: 1,
-            timestamp: '2025-11-08T10:30:15',
-            description: 'Person detected entering restricted area at north entrance',
-            severity: 'high',
-            imageUrl: null
-          },
-          {
-            id: 2,
-            timestamp: '2025-11-08T09:15:42',
-            description: 'Unusual movement pattern detected near storage room',
-            severity: 'medium',
-            imageUrl: null
-          },
-          {
-            id: 3,
-            timestamp: '2025-11-08T08:45:30',
-            description: 'Multiple persons detected in normally empty corridor',
-            severity: 'low',
-            imageUrl: null
-          }
-        ])
+        setAnomalies([]) // Empty array when backend is unavailable
       }
     }
 
@@ -73,11 +61,11 @@ function AnomalyLog() {
 
   const getSeverityColor = (severity) => {
     switch (severity) {
-      case 'high':
+      case 'critical':
         return 'bg-red-100 text-red-700 border-red-200'
-      case 'medium':
+      case 'warning':
         return 'bg-yellow-100 text-yellow-700 border-yellow-200'
-      case 'low':
+      case 'info':
         return 'bg-blue-100 text-blue-700 border-blue-200'
       default:
         return 'bg-slate-100 text-slate-700 border-slate-200'
@@ -112,7 +100,8 @@ function AnomalyLog() {
           anomalies.map((anomaly) => (
             <div
               key={anomaly.id}
-              className="bg-slate-50 rounded-xl p-4 border border-slate-200 hover:shadow-md transition-shadow duration-200"
+              onClick={() => setSelectedAnomaly(anomaly)}
+              className="bg-slate-50 rounded-xl p-4 border border-slate-200 hover:shadow-md transition-shadow duration-200 cursor-pointer"
             >
               {/* Timestamp and Severity */}
               <div className="flex items-start justify-between mb-2">
@@ -126,7 +115,7 @@ function AnomalyLog() {
                     anomaly.severity
                   )}`}
                 >
-                  {anomaly.severity}
+                  {anomaly.severity.toUpperCase()}
                 </span>
               </div>
 
@@ -157,6 +146,83 @@ function AnomalyLog() {
           <span>Last 24h</span>
         </div>
       </div>
+
+      {/* Modal */}
+      {selectedAnomaly && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+          onClick={() => setSelectedAnomaly(null)}
+        >
+          <div
+            className="bg-white rounded-2xl max-w-4xl max-h-[90vh] overflow-auto shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div className="sticky top-0 bg-white border-b border-slate-200 p-6 flex items-start justify-between">
+              <div>
+                <div className="flex items-center gap-3 mb-2">
+                  <h3 className="text-2xl font-semibold text-slate-800">Event Details</h3>
+                  <span
+                    className={`px-3 py-1 rounded-lg text-sm font-medium border ${getSeverityColor(
+                      selectedAnomaly.severity
+                    )}`}
+                  >
+                    {selectedAnomaly.severity.toUpperCase()}
+                  </span>
+                </div>
+                <div className="text-sm text-slate-500">
+                  <span className="font-semibold">{formatDate(selectedAnomaly.timestamp)}</span>
+                  <span className="mx-2">•</span>
+                  <span>{formatTimestamp(selectedAnomaly.timestamp)}</span>
+                </div>
+              </div>
+              <button
+                onClick={() => setSelectedAnomaly(null)}
+                className="text-slate-400 hover:text-slate-600 transition-colors p-2 hover:bg-slate-100 rounded-lg"
+              >
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div className="p-6">
+              {/* Description */}
+              <div className="mb-6">
+                <h4 className="text-sm font-semibold text-slate-700 mb-2">Description</h4>
+                <p className="text-slate-700 leading-relaxed">
+                  {selectedAnomaly.description}
+                </p>
+              </div>
+
+              {/* Full Image */}
+              {selectedAnomaly.imageUrl && (
+                <div className="mb-4">
+                  <h4 className="text-sm font-semibold text-slate-700 mb-2">Captured Image</h4>
+                  <div className="rounded-xl overflow-hidden bg-slate-900 border border-slate-200">
+                    <img
+                      src={selectedAnomaly.imageUrl}
+                      alt="Anomaly capture full size"
+                      className="w-full h-auto object-contain"
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

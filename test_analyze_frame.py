@@ -99,14 +99,22 @@ def main():
         print(f"❌ Test images directory not found: {TEST_IMAGES_DIR}")
         sys.exit(1)
 
-    # Get all image files
-    image_files = sorted(list(test_dir.glob("*.jpg")) + list(test_dir.glob("*.png")))
+    # Test specific images (4, 5, and 6)
+    image_files = [
+        test_dir / "test4.jpeg",
+        test_dir / "test5.jpeg",
+        test_dir / "test6.jpeg"
+    ]
 
-    if not image_files:
-        print(f"❌ No test images found in {TEST_IMAGES_DIR}")
+    # Check if all images exist
+    missing_images = [img for img in image_files if not img.exists()]
+    if missing_images:
+        print("❌ Missing test images:")
+        for img in missing_images:
+            print(f"   - {img}")
         sys.exit(1)
 
-    print(f"\nFound {len(image_files)} test image(s)")
+    print(f"\nTesting {len(image_files)} image(s): test4.jpeg, test5.jpeg, test6.jpeg")
 
     # Test each image
     for image_path in image_files:
