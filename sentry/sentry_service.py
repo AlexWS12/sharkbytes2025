@@ -57,6 +57,12 @@ TILT_INVERT = -1
 TARGET_LOST_TIMEOUT = 2.0
 PERSON_CLASS_ID = 0
 
+# Face detection parameters
+FACE_PRIORITY = True  # Prioritize face tracking over body tracking
+FACE_SCALE_FACTOR = 1.1  # Face detection scale factor
+FACE_MIN_NEIGHBORS = 5  # Minimum neighbors for face detection
+FACE_MIN_SIZE = (30, 30)  # Minimum face size in pixels
+
 
 # ========================================
 # Servo Controller (with simulation mode)
@@ -180,6 +186,16 @@ class SentryService:
         print("[SENTRY] Loading YOLO model...")
         self.yolo_model = YOLO('yolo11n.pt')
 
+        # Face detection
+        print("[FACE] Loading face detector...")
+        self.face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+        if self.face_cascade.empty():
+            print("[FACE] Warning: Face detector failed to load - will use body tracking only")
+            self.face_detection_enabled = False
+        else:
+            print("[FACE] Face detector loaded successfully")
+            self.face_detection_enabled = True and FACE_PRIORITY
+
         # DeepSORT
         self.tracker = DeepSort(max_age=30, n_init=3)
 
@@ -241,6 +257,58 @@ class SentryService:
         """Get the latest annotated frame (thread-safe)."""
         with self.frame_lock:
             return self.latest_frame.copy() if self.latest_frame is not None else None
+
+    def detect_faces(self, frame, person_bbox):
+        """
+        Detect faces within a person's bounding box.
+        Returns (x, y) center of the largest face, or None if no faces found.
+        
+        Args:
+            frame: BGR frame from camera
+            person_bbox: [x1, y1, x2, y2] bounding box of detected person
+        
+        Returns:
+            tuple: (center_x, center_y) of largest face in absolute frame coordinates,
+                   or None if no face detected
+        """
+        if not self.face_detection_enabled:
+            return None
+        
+        x1, y1, x2, y2 = map(int, person_bbox)
+        
+        # Ensure bbox is within frame bounds
+        x1, y1 = max(0, x1), max(0, y1)
+        x2, y2 = min(frame.shape[1], x2), min(frame.shape[0], y2)
+        
+        # Extract person region of interest
+        person_roi = frame[y1:y2, x1:x2]
+        
+        if person_roi.size == 0:
+            return None
+        
+        # Convert to grayscale for face detection
+        gray = cv2.cvtColor(person_roi, cv2.COLOR_BGR2GRAY)
+        
+        # Detect faces
+        faces = self.face_cascade.detectMultiScale(
+            gray,
+            scaleFactor=FACE_SCALE_FACTOR,
+            minNeighbors=FACE_MIN_NEIGHBORS,
+            minSize=FACE_MIN_SIZE
+        )
+        
+        if len(faces) == 0:
+            return None
+        
+        # Find largest face (by area)
+        largest_face = max(faces, key=lambda f: f[2] * f[3])
+        fx, fy, fw, fh = largest_face
+        
+        # Convert face center from ROI coordinates to absolute frame coordinates
+        face_center_x = x1 + fx + fw // 2
+        face_center_y = y1 + fy + fh // 2
+        
+        return (face_center_x, face_center_y)
 
     def get_stats(self) -> Dict[str, Any]:
         """Get current stats for API."""
@@ -313,8 +381,17 @@ class SentryService:
                     self.target.update_target(track_id)
                     target_found = True
 
-                    # Get center and control servos
-                    cx, cy = self._get_bbox_center(bbox)
+                    # Get target center - prioritize face if detected
+                    if FACE_PRIORITY and self.face_detection_enabled:
+                        face_center = self.detect_faces(frame, bbox)
+                        if face_center:
+                            cx, cy = face_center
+                        else:
+                            # No face detected, fall back to body center
+                            cx, cy = self._get_bbox_center(bbox)
+                    else:
+                        cx, cy = self._get_bbox_center(bbox)
+                    
                     self._control_servos(cx, cy)
                     break
 
@@ -415,6 +492,17 @@ class SentryService:
                 color = (0, 255, 0)  # Green
                 thickness = 3
                 label = f"TARGET ID:{track_id}"
+                
+                # Detect and draw face if this is the locked target
+                if FACE_PRIORITY and self.face_detection_enabled:
+                    face_center = self.detect_faces(frame, bbox)
+                    if face_center:
+                        fx, fy = face_center
+                        # Draw circle around face center
+                        cv2.circle(frame, (fx, fy), 8, (0, 255, 255), -1)  # Yellow dot
+                        cv2.circle(frame, (fx, fy), 20, (0, 255, 255), 2)  # Yellow circle
+                        # Draw line from face to frame center
+                        cv2.line(frame, (fx, fy), (self.frame_center_x, self.frame_center_y), (0, 255, 255), 1)
             else:
                 color = (255, 100, 0)  # Blue
                 thickness = 2

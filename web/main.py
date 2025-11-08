@@ -159,11 +159,12 @@ def generate_frames():
 
     if not sentry:
         # Return a placeholder frame if sentry not available
-        placeholder = cv2.imread("web/static/placeholder.jpg")
+        placeholder_path = os.path.join(os.path.dirname(__file__), "static", "placeholder.jpg")
+        placeholder = cv2.imread(placeholder_path)
         if placeholder is None:
             # Create a simple placeholder
             placeholder = cv2.putText(
-                cv2.rectangle(cv2.zeros((320, 320, 3), dtype=np.uint8), (0, 0), (320, 320), (50, 50, 50), -1),
+                cv2.rectangle(np.zeros((320, 320, 3), dtype=np.uint8), (0, 0), (320, 320), (50, 50, 50), -1),
                 "Camera Not Available",
                 (50, 160),
                 cv2.FONT_HERSHEY_SIMPLEX,

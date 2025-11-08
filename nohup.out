@@ -1,0 +1,16 @@
+/home/jorget15/Documents/Sharkybytes/sharkbytes2025/sentry_env/lib/python3.10/site-packages/google/api_core/_python_version_support.py:266: FutureWarning: You are using a Python version (3.10.12) which Google will stop supporting in new releases of google.api_core once it reaches its end of life (2026-10-04). Please upgrade to the latest Python version, or at least Python 3.11, to continue receiving updates for google.api_core past that date.
+  warnings.warn(message, FutureWarning)
+INFO:     Started server process [18032]
+INFO:     Waiting for application startup.
+[ WARN:0@5.296] global cap_v4l.cpp:913 open VIDEOIO(V4L2:/dev/video0): can't open camera by index
+[ERROR:0@5.298] global obsensor_uvc_stream_channel.cpp:158 getStreamChannelGroup Camera index out of range
+INFO:     Application startup complete.
+ERROR:    [Errno 98] error while attempting to bind on address ('0.0.0.0', 5000): address already in use
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+[STARTUP] Initializing sentry service...
+
+[SENTRY] Initializing service...
+[ERROR] Failed to start sentry: Failed to open camera
+Exiting... 
+Cleaning up pins

@@ -6,7 +6,7 @@ function AnomalyLog() {
   const [selectedAnomaly, setSelectedAnomaly] = useState(null)
 
   // API endpoint - adjust to match your backend
-  const API_BASE = 'http://localhost:8000'
+  const API_BASE = 'http://localhost:5000'
 
   // Fetch anomalies from the database
   useEffect(() => {

@@ -2,58 +2,45 @@
 
 ## Launching the Application
 
-You have **three options** to start the app:
+The easiest way to start everything:
 
-### Option 1: Start Everything at Once (Recommended for macOS)
+### Start All Services (Recommended)
 ```bash
-./start_all.sh
+./start_project.sh
 ```
-This will automatically open 3 terminal tabs with all services running.
+This will automatically start:
+- Backend (FastAPI) at `http://localhost:5000`
+- Frontend (React) at `http://localhost:5173`
+- Sentry (camera tracking embedded in backend)
+
+All services run in the background with logs saved to `logs/` directory.
 
 ---
 
-### Option 2: Start Services Manually (3 separate terminals)
+## 📊 Managing Services
 
-**Terminal 1 - Backend:**
+### Check Status
 ```bash
-./start_backend.sh
+./status_project.sh
 ```
-- FastAPI server at `http://localhost:5000`
-- API docs at `http://localhost:5000/docs`
+Shows which services are running and their status.
 
-**Terminal 2 - Frontend:**
+### Stop All Services
 ```bash
-./start_frontend.sh
+./stop_project.sh
 ```
-- React dev server at `http://localhost:5173`
+Gracefully stops all running services.
 
-**Terminal 3 - Sentry (Optional):**
+### View Logs
 ```bash
-./start_sentry.sh
-```
-- OpenCV camera tracking system
-- Controls: `L` (lock), `C` (center), `Q` (quit)
+# Backend logs
+tail -f logs/backend.log
 
----
+# Frontend logs
+tail -f logs/frontend.log
 
-### Option 3: Manual Commands
-
-**Backend:**
-```bash
-source venv/bin/activate
-uvicorn web.main:app --host 0.0.0.0 --port 5000 --reload
-```
-
-**Frontend:**
-```bash
-cd frontend
-npm run dev
-```
-
-**Sentry:**
-```bash
-source venv/bin/activate
-python3 sentry/person_tracking_sentry.py
+# Both
+tail -f logs/*.log
 ```
 
 ---
@@ -65,6 +52,8 @@ Once running, access the application at:
 - **Frontend UI:** http://localhost:5173
 - **Backend API:** http://localhost:5000
 - **API Documentation:** http://localhost:5000/docs
+- **Video Feed:** http://localhost:5000/video_feed
+- **Sentry Stats:** http://localhost:5000/sentry/stats
 
 ---
 
