@@ -1,0 +1,58 @@
+========================================
+PERSON-TRACKING SENTRY TURRET
+========================================
+
+A complete autonomous tracking system for Jetson devices.
+
+QUICK START
+-----------
+1. ./setup_venv.sh              (installs everything)
+2. source sentry_env/bin/activate
+3. python3 person_tracking_sentry.py
+
+CONTROLS
+--------
+L - Toggle auto-lock ON/OFF
+C - Center servos (when unlocked)
+Q - Quit
+
+KEY FEATURES
+------------
+✓ YOLOv11n detection (22% faster than v8)
+✓ DeepSORT tracking with persistent IDs
+✓ PD controller (smooth, no overshoot)
+✓ CUDA acceleration (25-35 FPS)
+✓ Manual lock control
+✓ Auto-centering capability
+
+HARDWARE
+--------
+• Jetson Orin Nano (JetPack 6.x)
+• USB Camera (/dev/video0)
+• PCA9685 Servo Driver (I2C 0x40)
+• 2x Servos: Pan (ch0), Tilt (ch1)
+
+SOFTWARE
+--------
+• PyTorch 2.5.0 + CUDA 12.6
+• YOLOv11n (5.4MB model)
+• DeepSORT 1.3.2
+• NumPy 1.26.4 (Jetson-compatible)
+• Adafruit ServoKit 1.3.22
+
+DOCUMENTATION
+-------------
+README.md       - Full setup guide
+CONTROLS.md     - Keyboard controls
+TUNING_GUIDE.md - Performance tuning
+VERSION_INFO.md - Package versions
+
+TESTED & WORKING
+----------------
+✓ CUDA acceleration active
+✓ 25-35 FPS real-time tracking
+✓ Smooth servo control (no jitter)
+✓ Stable target locking
+✓ Manual override controls
+
+Last Updated: November 8, 2025
