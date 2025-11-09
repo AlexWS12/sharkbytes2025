@@ -35,8 +35,8 @@ except ImportError:
 
 # Camera settings
 CAMERA_INDEX = 0
-CAMERA_WIDTH = 320
-CAMERA_HEIGHT = 320
+CAMERA_WIDTH = 800
+CAMERA_HEIGHT = 600
 TARGET_FPS = 30
 
 # Servo settings
