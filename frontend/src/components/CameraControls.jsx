@@ -28,11 +28,9 @@ function CameraControls() {
   }
 
   const handleCenter = () => {
-    if (!isLocked) {
-      sendCommand('center')
-      setPanAngle(90)
-      setTiltAngle(90)
-    }
+    sendCommand('center')
+    setPanAngle(90)
+    setTiltAngle(90)
   }
 
   const handlePan = (direction) => {
@@ -62,12 +60,7 @@ function CameraControls() {
         {/* Pan Left */}
         <button
           onClick={() => handlePan('left')}
-          disabled={isLocked}
-          className={`w-14 h-14 rounded-xl ${
-            isLocked
-              ? 'bg-slate-200 text-slate-400 cursor-not-allowed'
-              : 'bg-blue-500 text-white hover:bg-blue-600 active:bg-blue-700'
-          } transition-colors duration-150 flex items-center justify-center font-bold text-xl shadow-md`}
+          className="w-14 h-14 rounded-xl bg-blue-500 text-white hover:bg-blue-600 active:bg-blue-700 transition-colors duration-150 flex items-center justify-center font-bold text-xl shadow-md"
         >
           ←
         </button>
@@ -75,12 +68,7 @@ function CameraControls() {
         {/* Tilt Up */}
         <button
           onClick={() => handleTilt('up')}
-          disabled={isLocked}
-          className={`w-14 h-14 rounded-xl ${
-            isLocked
-              ? 'bg-slate-200 text-slate-400 cursor-not-allowed'
-              : 'bg-blue-500 text-white hover:bg-blue-600 active:bg-blue-700'
-          } transition-colors duration-150 flex items-center justify-center font-bold text-xl shadow-md`}
+          className="w-14 h-14 rounded-xl bg-blue-500 text-white hover:bg-blue-600 active:bg-blue-700 transition-colors duration-150 flex items-center justify-center font-bold text-xl shadow-md"
         >
           ↑
         </button>
@@ -88,12 +76,7 @@ function CameraControls() {
         {/* Tilt Down */}
         <button
           onClick={() => handleTilt('down')}
-          disabled={isLocked}
-          className={`w-14 h-14 rounded-xl ${
-            isLocked
-              ? 'bg-slate-200 text-slate-400 cursor-not-allowed'
-              : 'bg-blue-500 text-white hover:bg-blue-600 active:bg-blue-700'
-          } transition-colors duration-150 flex items-center justify-center font-bold text-xl shadow-md`}
+          className="w-14 h-14 rounded-xl bg-blue-500 text-white hover:bg-blue-600 active:bg-blue-700 transition-colors duration-150 flex items-center justify-center font-bold text-xl shadow-md"
         >
           ↓
         </button>
@@ -101,12 +84,7 @@ function CameraControls() {
         {/* Pan Right */}
         <button
           onClick={() => handlePan('right')}
-          disabled={isLocked}
-          className={`w-14 h-14 rounded-xl ${
-            isLocked
-              ? 'bg-slate-200 text-slate-400 cursor-not-allowed'
-              : 'bg-blue-500 text-white hover:bg-blue-600 active:bg-blue-700'
-          } transition-colors duration-150 flex items-center justify-center font-bold text-xl shadow-md`}
+          className="w-14 h-14 rounded-xl bg-blue-500 text-white hover:bg-blue-600 active:bg-blue-700 transition-colors duration-150 flex items-center justify-center font-bold text-xl shadow-md"
         >
           →
         </button>
@@ -114,12 +92,7 @@ function CameraControls() {
         {/* Center Button */}
         <button
           onClick={handleCenter}
-          disabled={isLocked}
-          className={`w-14 h-14 rounded-xl ${
-            isLocked
-              ? 'bg-slate-200 text-slate-400 cursor-not-allowed'
-              : 'bg-slate-600 text-white hover:bg-slate-700 active:bg-slate-800'
-          } transition-colors duration-150 flex items-center justify-center font-bold text-2xl shadow-md`}
+          className="w-14 h-14 rounded-xl bg-slate-600 text-white hover:bg-slate-700 active:bg-slate-800 transition-colors duration-150 flex items-center justify-center font-bold text-2xl shadow-md"
         >
           ⊙
         </button>
@@ -127,24 +100,17 @@ function CameraControls() {
         {/* Divider */}
         <div className="h-12 w-px bg-slate-300 mx-2"></div>
 
-        {/* Lock/Unlock Toggle */}
+        {/* Manual/Auto Toggle */}
         <button
           onClick={handleToggleLock}
           className={`px-6 h-14 rounded-xl font-semibold text-sm shadow-lg transition-all duration-200 ${
             isLocked
               ? 'bg-green-500 text-white hover:bg-green-600 active:bg-green-700'
-              : 'bg-slate-300 text-slate-700 hover:bg-slate-400 active:bg-slate-500'
+              : 'bg-blue-500 text-white hover:bg-blue-600 active:bg-blue-700'
           }`}
         >
-          {isLocked ? '🔒 Locked' : '🔓 Unlocked'}
+          {isLocked ? '🤖 Auto Tracking' : '🎮 Manual'}
         </button>
-
-        {/* Status Text */}
-        <div className="ml-2">
-          <p className="text-xs text-slate-500">
-            {isLocked ? 'Auto-tracking' : 'Manual mode'}
-          </p>
-        </div>
       </div>
     </div>
   )

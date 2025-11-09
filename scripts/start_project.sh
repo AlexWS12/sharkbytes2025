@@ -19,16 +19,17 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
-# Get script directory
+# Get script directory and project root
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-cd "$SCRIPT_DIR"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+cd "$PROJECT_ROOT"
 
 # Log directory
-LOG_DIR="$SCRIPT_DIR/logs"
+LOG_DIR="$PROJECT_ROOT/logs"
 mkdir -p "$LOG_DIR"
 
 # PID file directory
-PID_DIR="$SCRIPT_DIR/.pids"
+PID_DIR="$PROJECT_ROOT/.pids"
 mkdir -p "$PID_DIR"
 
 echo ""

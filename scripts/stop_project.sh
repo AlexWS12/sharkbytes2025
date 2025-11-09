@@ -12,12 +12,13 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
-# Get script directory
+# Get script directory and project root
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-cd "$SCRIPT_DIR"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+cd "$PROJECT_ROOT"
 
 # PID file directory
-PID_DIR="$SCRIPT_DIR/.pids"
+PID_DIR="$PROJECT_ROOT/.pids"
 
 echo ""
 echo -e "${BLUE}========================================${NC}"
@@ -30,23 +31,30 @@ stopped_count=0
 # Function to stop a service
 stop_service() {
     local service_name=$1
-    local pid_file="$PID_DIR/${service_name}.pid"
+    local service_lower=$(echo "$service_name" | tr '[:upper:]' '[:lower:]')
+    local pid_file="$PID_DIR/${service_lower}.pid"
     
     if [ -f "$pid_file" ]; then
         local pid=$(cat "$pid_file")
         if ps -p "$pid" > /dev/null 2>&1; then
             echo -e "${YELLOW}Stopping $service_name (PID: $pid)...${NC}"
-            kill -15 "$pid" 2>/dev/null || kill -9 "$pid" 2>/dev/null
-            sleep 1
+            kill -15 "$pid" 2>/dev/null || true
+            sleep 2
             
-            # Check if still running
+            # Check if still running and force kill if needed
             if ps -p "$pid" > /dev/null 2>&1; then
+                echo -e "${YELLOW}   → Force killing $service_name...${NC}"
                 kill -9 "$pid" 2>/dev/null || true
                 sleep 1
             fi
             
-            echo -e "${GREEN}   ✓ $service_name stopped${NC}"
-            ((stopped_count++))
+            # Verify stopped
+            if ! ps -p "$pid" > /dev/null 2>&1; then
+                echo -e "${GREEN}   ✓ $service_name stopped${NC}"
+                ((stopped_count++))
+            else
+                echo -e "${RED}   ✗ Failed to stop $service_name${NC}"
+            fi
         else
             echo -e "${YELLOW}$service_name not running${NC}"
         fi
@@ -64,14 +72,14 @@ stop_service "Frontend"
 echo ""
 echo -e "${YELLOW}Cleaning up any remaining processes...${NC}"
 
-# Kill uvicorn (backend)
-pkill -f "uvicorn web.main" 2>/dev/null && echo -e "${GREEN}   ✓ Cleaned up uvicorn processes${NC}" || true
+# Kill uvicorn (backend) - force kill
+pkill -9 -f "uvicorn web.main" 2>/dev/null && echo -e "${GREEN}   ✓ Cleaned up uvicorn processes${NC}" || true
 
-# Kill vite (frontend)
-pkill -f "vite" 2>/dev/null && echo -e "${GREEN}   ✓ Cleaned up vite processes${NC}" || true
+# Kill vite (frontend) - force kill
+pkill -9 -f "vite" 2>/dev/null && echo -e "${GREEN}   ✓ Cleaned up vite processes${NC}" || true
 
 # Kill node processes running dev server
-pkill -f "npm run dev" 2>/dev/null && echo -e "${GREEN}   ✓ Cleaned up npm processes${NC}" || true
+pkill -9 -f "npm run dev" 2>/dev/null && echo -e "${GREEN}   ✓ Cleaned up npm processes${NC}" || true
 
 echo ""
 if [ $stopped_count -gt 0 ]; then

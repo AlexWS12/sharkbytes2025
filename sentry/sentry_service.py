@@ -57,10 +57,16 @@ TILT_INVERT = -1
 TARGET_LOST_TIMEOUT = 2.0
 PERSON_CLASS_ID = 0
 
+# Auto-scan parameters (when no target)
+AUTO_SCAN_ENABLED = True  # Enable automatic scanning when no target
+SCAN_SPEED = 0.8  # Degrees per frame (lower = smoother)
+SCAN_RANGE = 60  # Degrees to scan left/right from center
+SCAN_CENTER_PAUSE = 1.0  # Seconds to pause at center before scanning
+
 # Performance optimization
 DETECTION_SKIP_FRAMES = 3  # Run YOLO every N frames (1=every frame, 2=every other, 3=every third)
 YOLO_IMGSZ = 160  # Reduced from 320 for faster inference on Jetson
-TRACKING_UPDATE_SKIP = 3  # Run DeepSORT embedding every N frames (major bottleneck!)
+TRACKING_UPDATE_SKIP = 2  # Run DeepSORT embedding every N frames (major bottleneck!)
 
 # Face detection parameters
 FACE_PRIORITY = True  # Prioritize face tracking over body tracking
@@ -192,7 +198,8 @@ class SentryService:
 
         # YOLO
         print("[SENTRY] Loading YOLO model...")
-        self.yolo_model = YOLO('yolo11n.pt')
+        # Initialize YOLO model
+        self.model = YOLO('models/yolo11n_160_fp16.engine')  # Load TensorRT engine for faster inference
 
         # Face detection
         print("[FACE] Loading face detector...")
@@ -255,6 +262,19 @@ class SentryService:
             'drawing': [],
             'total': []
         }
+
+        # Auto-scan state (when no target locked)
+        self.scan_direction = 1  # 1 = scanning right, -1 = scanning left
+        self.scan_center_time = None  # Time when we last centered
+        self.is_scanning = False  # Currently in scan mode
+        
+        # Manual control override
+        self.manual_control_active = False  # Manual control has priority
+        self.manual_control_timeout = 2.0  # Seconds before reverting to auto
+        self.last_manual_command_time = 0  # Timestamp of last manual command
+
+        # Auto-tracking state
+        self.auto_tracking_enabled = True  # Auto-tracking is on by default
 
         # Stats for API
         self.stats = {
@@ -353,30 +373,48 @@ class SentryService:
             cmd = self.command_queue.get()
 
             if cmd == 'toggle_lock':
-                if self.target.manual_lock_disabled:
-                    self.target.manual_lock_enable()
-                else:
-                    self.target.manual_unlock()
+                # Toggle between Auto-Tracking and Manual mode
+                self.auto_tracking_enabled = not self.auto_tracking_enabled
+                if not self.auto_tracking_enabled:
+                    # Switching to manual mode - unlock any target
+                    self.target.unlock()
+                    self.is_scanning = False
+                    self.scan_center_time = None
+                print(f"[CONTROL] Auto-tracking: {'ENABLED' if self.auto_tracking_enabled else 'DISABLED'}")
 
             elif cmd == 'center':
-                if not self.target.is_locked:
-                    self.servo.reset()
+                self.servo.reset()
+                # Manual control overrides auto behavior
+                self.manual_control_active = True
+                self.last_manual_command_time = time.time()
 
             elif cmd == 'pan_left':
                 new_pan = max(PAN_MIN, self.servo.pan_angle - 5)
                 self.servo.set_pan(new_pan)
+                # Manual control overrides auto behavior
+                self.manual_control_active = True
+                self.last_manual_command_time = time.time()
 
             elif cmd == 'pan_right':
                 new_pan = min(PAN_MAX, self.servo.pan_angle + 5)
                 self.servo.set_pan(new_pan)
+                # Manual control overrides auto behavior
+                self.manual_control_active = True
+                self.last_manual_command_time = time.time()
 
             elif cmd == 'tilt_up':
-                new_tilt = max(TILT_MIN, self.servo.tilt_angle - 5)
+                new_tilt = min(TILT_MAX, self.servo.tilt_angle + 5)  # Fixed: up = increase angle
                 self.servo.set_tilt(new_tilt)
+                # Manual control overrides auto behavior
+                self.manual_control_active = True
+                self.last_manual_command_time = time.time()
 
             elif cmd == 'tilt_down':
-                new_tilt = min(TILT_MAX, self.servo.tilt_angle + 5)
+                new_tilt = max(TILT_MIN, self.servo.tilt_angle - 5)  # Fixed: down = decrease angle
                 self.servo.set_tilt(new_tilt)
+                # Manual control overrides auto behavior
+                self.manual_control_active = True
+                self.last_manual_command_time = time.time()
 
     def _run_loop(self):
         """Main processing loop (runs in background thread)."""
@@ -412,38 +450,50 @@ class SentryService:
 
             # Check timeout
             self.target.check_timeout()
+            
+            # Check if manual control has timed out
+            current_time = time.time()
+            if self.manual_control_active:
+                if current_time - self.last_manual_command_time > self.manual_control_timeout:
+                    self.manual_control_active = False
+                    print("[MANUAL] Control timeout - returning to auto mode")
 
-            # Process tracking
+            # Process tracking (ONLY if manual control is not active AND auto-tracking is enabled)
             face_start = time.time()
             target_found = False
-            for track in tracks:
-                track_id = track['id']
-                bbox = track['bbox']
+            
+            if not self.manual_control_active and self.auto_tracking_enabled:
+                for track in tracks:
+                    track_id = track['id']
+                    bbox = track['bbox']
 
-                if not self.target.is_locked:
-                    self.target.lock_target(track_id)
+                    if not self.target.is_locked:
+                        self.target.lock_target(track_id)
+                        # Reset scanning state when locking onto target
+                        self.is_scanning = False
+                        self.scan_center_time = None
 
-                if self.target.is_locked and track_id == self.target.locked_id:
-                    self.target.update_target(track_id)
-                    target_found = True
+                    if self.target.is_locked and track_id == self.target.locked_id:
+                        self.target.update_target(track_id)
+                        target_found = True
 
-                    # Get target center - prioritize face if detected
-                    if FACE_PRIORITY and self.face_detection_enabled:
-                        self.face_frame_counter += 1
-                        # Run face detection every N frames to reduce load
-                        if self.face_frame_counter % FACE_DETECTION_SKIP_FRAMES == 0:
-                            self.last_face_center = self.detect_faces(frame, bbox)
-                        
-                        if self.last_face_center:
-                            cx, cy = self.last_face_center
+                        # Get target center - prioritize face if detected
+                        if FACE_PRIORITY and self.face_detection_enabled:
+                            self.face_frame_counter += 1
+                            # Run face detection every N frames to reduce load
+                            if self.face_frame_counter % FACE_DETECTION_SKIP_FRAMES == 0:
+                                self.last_face_center = self.detect_faces(frame, bbox)
+                            
+                            if self.last_face_center:
+                                cx, cy = self.last_face_center
+                            else:
+                                # No face detected, fall back to body center
+                                cx, cy = self._get_bbox_center(bbox)
                         else:
-                            # No face detected, fall back to body center
                             cx, cy = self._get_bbox_center(bbox)
-                    else:
-                        cx, cy = self._get_bbox_center(bbox)
-                    
-                    self._control_servos(cx, cy)
-                    break
+                        
+                        self._control_servos(cx, cy)
+                        break
             
             face_time = time.time() - face_start
             
@@ -451,6 +501,10 @@ class SentryService:
             if not target_found:
                 self.last_face_center = None
                 self.face_frame_counter = 0
+                
+                # Auto-scan when no target is locked (ONLY if auto-tracking enabled and manual control is not active)
+                if AUTO_SCAN_ENABLED and self.auto_tracking_enabled and not self.target.is_locked and not self.manual_control_active:
+                    self._auto_scan()
 
             # Update FPS
             self._update_fps()
@@ -485,7 +539,7 @@ class SentryService:
 
     def _detect_people(self, frame):
         """Detect people using YOLO."""
-        results = self.yolo_model(frame, verbose=False, conf=0.35, classes=[0], imgsz=YOLO_IMGSZ)
+        results = self.model(frame, verbose=False, conf=0.35, classes=[0], imgsz=YOLO_IMGSZ)
         detections = []
 
         for result in results:
@@ -538,6 +592,61 @@ class SentryService:
 
         self.servo.move_smooth(target_pan, target_tilt)
 
+    def _auto_scan(self):
+        """
+        Automatically scan left and right when no target is locked.
+        Centers first, pauses briefly, then scans side to side.
+        """
+        current_time = time.time()
+        
+        # If not currently scanning, return to center first
+        if not self.is_scanning:
+            # Check if we're already centered
+            if abs(self.servo.pan_angle - PAN_DEFAULT) > 2:
+                # Move towards center
+                if self.servo.pan_angle > PAN_DEFAULT:
+                    self.servo.set_pan(max(PAN_DEFAULT, self.servo.pan_angle - SCAN_SPEED * 2))
+                else:
+                    self.servo.set_pan(min(PAN_DEFAULT, self.servo.pan_angle + SCAN_SPEED * 2))
+                return
+            else:
+                # We're centered, start pause timer if not already set
+                if self.scan_center_time is None:
+                    self.scan_center_time = current_time
+                    self.servo.set_pan(PAN_DEFAULT)
+                    self.servo.set_tilt(TILT_DEFAULT)
+                    return
+                
+                # Check if pause is complete
+                if current_time - self.scan_center_time < SCAN_CENTER_PAUSE:
+                    return
+                
+                # Pause complete, start scanning
+                self.is_scanning = True
+                self.scan_center_time = None
+        
+        # Calculate scan boundaries
+        scan_left = PAN_DEFAULT - SCAN_RANGE
+        scan_right = PAN_DEFAULT + SCAN_RANGE
+        
+        # Clamp to servo limits
+        scan_left = max(PAN_MIN, scan_left)
+        scan_right = min(PAN_MAX, scan_right)
+        
+        # Update pan angle based on scan direction
+        new_pan = self.servo.pan_angle + (SCAN_SPEED * self.scan_direction)
+        
+        # Check if we've reached the boundary and need to reverse
+        if self.scan_direction > 0 and new_pan >= scan_right:
+            new_pan = scan_right
+            self.scan_direction = -1  # Reverse to scan left
+        elif self.scan_direction < 0 and new_pan <= scan_left:
+            new_pan = scan_left
+            self.scan_direction = 1  # Reverse to scan right
+        
+        # Apply the new pan angle
+        self.servo.set_pan(new_pan)
+
     def _update_fps(self):
         """Update FPS counter."""
         self.fps_frame_count += 1
@@ -583,7 +692,16 @@ class SentryService:
                 (self.frame_center_x, self.frame_center_y + 20), (0, 0, 255), 2)
 
         # Draw status
-        status_text = self.target.get_status()
+        if not self.auto_tracking_enabled:
+            status_text = "MANUAL MODE"
+        elif self.manual_control_active:
+            status_text = "MANUAL CONTROL"
+        elif self.is_scanning:
+            status_text = "AUTO: SCANNING..."
+        elif not self.target.is_locked and self.scan_center_time is not None:
+            status_text = "AUTO: CENTERING..."
+        else:
+            status_text = self.target.get_status()
         cv2.putText(frame, f"Status: {status_text}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 255), 2)
 
         # Draw servo angles

@@ -221,7 +221,7 @@ class PersonTrackingSentry:
         
         # Initialize YOLO model
         print("[YOLO] Loading YOLOv11 model...")
-        self.yolo_model = YOLO('yolo11n.pt')  # YOLOv11 Nano - faster and more accurate than v8
+        self.yolo_model = YOLO('../models/yolo11n.pt')  # YOLOv11 Nano - faster and more accurate than v8
         print("[YOLO] Model loaded successfully")
         
         # Initialize face detector (Haar Cascade)

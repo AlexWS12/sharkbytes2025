@@ -12,12 +12,13 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
-# Get script directory
+# Get script directory and project root
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-cd "$SCRIPT_DIR"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+cd "$PROJECT_ROOT"
 
 # PID file directory
-PID_DIR="$SCRIPT_DIR/.pids"
+PID_DIR="$PROJECT_ROOT/.pids"
 
 echo ""
 echo -e "${BLUE}========================================${NC}"
@@ -31,7 +32,8 @@ total_services=2
 # Function to check service status
 check_service() {
     local service_name=$1
-    local pid_file="$PID_DIR/${service_name}.pid"
+    local service_lower=$(echo "$service_name" | tr '[:upper:]' '[:lower:]')
+    local pid_file="$PID_DIR/${service_lower}.pid"
     local port=$2
     
     if [ -f "$pid_file" ]; then

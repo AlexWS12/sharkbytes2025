@@ -65,7 +65,7 @@ def check_yolo():
         
         # Try loading model
         print("\nLoading YOLOv11n model...")
-        model = YOLO('yolo11n.pt')
+        model = YOLO('../models/yolo11n.pt')
         print("✅ YOLOv11n model loaded successfully")
         
         # Check device
@@ -100,7 +100,7 @@ def benchmark_inference():
         
         # Load model
         print("Loading model...")
-        model = YOLO('yolo11n.pt')
+        model = YOLO('../models/yolo11n.pt')
         
         # Create dummy frame
         frame = np.random.randint(0, 255, (320, 320, 3), dtype=np.uint8)
