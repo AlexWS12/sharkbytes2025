@@ -781,7 +781,7 @@ class SentryService:
             self.track_snapshots[track_id] = current_time
             
             # Encode frame to JPEG in memory (no disk save)
-            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
             _, img_encoded = cv2.imencode('.jpg', frame)
             
             # Queue for Gemini analysis
@@ -887,7 +887,7 @@ class SentryService:
                             'critical': '🚨'
                         }
                         emoji = severity_emoji.get(result.get('severity', 'info'), 'ℹ️')
-                        print(f"[GEMINI] {emoji} Person {track_id}: {result['analysis']}")
+                        print(f"[GEMINI] {emoji} {result['analysis']}")
                         
                         # Upload to Supabase
                         try:
@@ -905,7 +905,7 @@ class SentryService:
                             # Create event in database
                             event_data = {
                                 "event_type": "person_detected",
-                                "description": f"Person {track_id}: {result['analysis']}",
+                                "description": result['analysis'],
                                 "severity": result.get('severity', 'info'),
                                 "timestamp": result['timestamp'],
                                 "image_url": image_url
@@ -921,11 +921,11 @@ class SentryService:
                             if result.get('severity') in ['warning', 'critical']:
                                 send_discord_alert(
                                     event_type="person_detected",
-                                    description=f"Person {track_id}: {result['analysis']}",
+                                    description=result['analysis'],
                                     severity=result['severity'],
                                     image_url=image_url
                                 )
-                                print(f"[DISCORD] Alert sent for person {track_id}")
+                                print(f"[DISCORD] Alert sent")
                                 
                         except Exception as e:
                             print(f"[SUPABASE] Error uploading snapshot: {e}")

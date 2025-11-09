@@ -69,7 +69,7 @@ Use 'info' for normal activities, 'warning' for suspicious activities, and 'crit
         # Prepare result
         result = {
             "image": os.path.basename(image_path),
-            "timestamp": datetime.now().isoformat(),
+            "timestamp": datetime.utcnow().isoformat() + 'Z',  # UTC timestamp with Z suffix
             "analysis": description if description else response.text,
             "severity": severity,
             "status": "success"
@@ -80,7 +80,7 @@ Use 'info' for normal activities, 'warning' for suspicious activities, and 'crit
     except Exception as e:
         return {
             "image": os.path.basename(image_path),
-            "timestamp": datetime.now().isoformat(),
+            "timestamp": datetime.utcnow().isoformat() + 'Z',  # UTC timestamp with Z suffix
             "analysis": None,
             "status": "error",
             "error": str(e)
