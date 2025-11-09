@@ -27,6 +27,11 @@ const ActivityLogScreen = () => {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [detailVisible, setDetailVisible] = useState(false);
   const [isLive, setIsLive] = useState(true);
+  const [systemStatus, setSystemStatus] = useState({
+    sentry_running: false,
+    sentry_available: false,
+  });
+  const [actionLoading, setActionLoading] = useState(false);
 
   // Polling interval ref
   const pollingInterval = useRef(null);
@@ -47,6 +52,9 @@ const ActivityLogScreen = () => {
       const data = await ApiService.getEvents(API_CONFIG.DEFAULT_LIMIT);
       setEvents(data);
       setIsLive(true);
+      
+      // Also fetch system status
+      await fetchSystemStatus();
     } catch (err) {
       console.error('Error fetching events:', err);
       setError(err.message || 'Failed to fetch events');
@@ -54,6 +62,41 @@ const ActivityLogScreen = () => {
     } finally {
       setLoading(false);
       setRefreshing(false);
+    }
+  };
+
+  /**
+   * Fetch system status
+   */
+  const fetchSystemStatus = async () => {
+    try {
+      const status = await ApiService.getSystemStatus();
+      setSystemStatus({
+        sentry_running: status.sentry_running,
+        sentry_available: status.sentry_available,
+      });
+    } catch (err) {
+      console.error('Error fetching system status:', err);
+    }
+  };
+
+  /**
+   * Toggle sentry start/stop
+   */
+  const handleToggleSentry = async () => {
+    setActionLoading(true);
+    try {
+      if (systemStatus.sentry_running) {
+        await ApiService.stopSystem();
+      } else {
+        await ApiService.startSystem();
+      }
+      await fetchSystemStatus();
+    } catch (err) {
+      console.error('Error toggling system:', err);
+      setError(err.message || 'Failed to toggle system');
+    } finally {
+      setActionLoading(false);
     }
   };
 
@@ -187,19 +230,40 @@ const ActivityLogScreen = () => {
     <View style={styles.header}>
       <View style={styles.headerTop}>
         <Text style={styles.title}>Activity Log</Text>
-        <View style={styles.liveIndicator}>
-          <Animated.View
+        <View style={styles.headerRight}>
+          <View style={styles.liveIndicator}>
+            <Animated.View
+              style={[
+                styles.liveDot,
+                {
+                  backgroundColor: isLive ? '#10B981' : '#9CA3AF',
+                  transform: [{ scale: isLive ? pulseAnim : 1 }],
+                },
+              ]}
+            />
+            <Text style={styles.liveText}>
+              {isLive ? 'LIVE' : 'OFFLINE'}
+            </Text>
+          </View>
+          
+          {/* Start/Stop Button */}
+          <TouchableOpacity
             style={[
-              styles.liveDot,
-              {
-                backgroundColor: isLive ? '#10B981' : '#9CA3AF',
-                transform: [{ scale: isLive ? pulseAnim : 1 }],
-              },
+              styles.toggleButton,
+              systemStatus.sentry_running ? styles.stopButton : styles.startButton,
+              !systemStatus.sentry_available && styles.disabledButton,
             ]}
-          />
-          <Text style={styles.liveText}>
-            {isLive ? 'LIVE' : 'OFFLINE'}
-          </Text>
+            onPress={handleToggleSentry}
+            disabled={actionLoading || !systemStatus.sentry_available}
+          >
+            {actionLoading ? (
+              <ActivityIndicator size="small" color="#fff" />
+            ) : (
+              <Text style={styles.toggleButtonText}>
+                {systemStatus.sentry_running ? '⏹' : '▶'}
+              </Text>
+            )}
+          </TouchableOpacity>
         </View>
       </View>
       <View style={styles.statsContainer}>
@@ -294,6 +358,11 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#111827',
   },
+  headerRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
   liveIndicator: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -313,6 +382,26 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#6B7280',
     letterSpacing: 0.5,
+  },
+  toggleButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  startButton: {
+    backgroundColor: '#35DDF9',
+  },
+  stopButton: {
+    backgroundColor: '#EF4444',
+  },
+  disabledButton: {
+    backgroundColor: '#9CA3AF',
+  },
+  toggleButtonText: {
+    fontSize: 18,
+    color: '#FFFFFF',
   },
   statsContainer: {
     flexDirection: 'row',

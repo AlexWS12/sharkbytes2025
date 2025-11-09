@@ -160,6 +160,48 @@ export const ApiService = {
       throw error;
     }
   },
+
+  /**
+   * Get system status
+   * @returns {Promise<Object>} System status
+   */
+  async getSystemStatus() {
+    try {
+      const response = await apiClient.get('/system/status');
+      return response.data;
+    } catch (error) {
+      console.error('Failed to get system status:', error);
+      throw error;
+    }
+  },
+
+  /**
+   * Start the sentry system
+   * @returns {Promise<Object>} Start response
+   */
+  async startSystem() {
+    try {
+      const response = await apiClient.post('/system/start');
+      return response.data;
+    } catch (error) {
+      console.error('Failed to start system:', error);
+      throw error;
+    }
+  },
+
+  /**
+   * Stop the sentry system
+   * @returns {Promise<Object>} Stop response
+   */
+  async stopSystem() {
+    try {
+      const response = await apiClient.post('/system/stop');
+      return response.data;
+    } catch (error) {
+      console.error('Failed to stop system:', error);
+      throw error;
+    }
+  },
 };
 
 export default ApiService;
