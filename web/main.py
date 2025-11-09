@@ -12,6 +12,8 @@ import tempfile
 import sys
 import cv2
 import numpy as np
+import subprocess
+from pathlib import Path
 
 sys.path.append(os.path.dirname(__file__))  # ensures local imports work
 
@@ -163,7 +165,97 @@ def get_snapshot_stats():
     
     return sentry.get_snapshot_stats()
 
-    return {"status": "success", "command": command.command}
+
+@app.post("/system/start")
+def start_sentry_system():
+    """
+    Start the sentry service (camera + tracking).
+    This restarts just the backend sentry, not the entire system.
+    """
+    global sentry
+    
+    try:
+        if sentry and sentry.running:
+            return {"status": "already_running", "message": "Sentry is already running"}
+        
+        if not SENTRY_AVAILABLE:
+            return {"status": "error", "message": "Sentry service not available"}
+        
+        # Reinitialize sentry if it was stopped (camera was released)
+        # We need to create a fresh instance because the camera device was closed
+        sentry = SentryService()
+        sentry.start()
+        
+        return {
+            "status": "success",
+            "message": "Sentry service started",
+            "running": True
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to start sentry: {str(e)}")
+
+
+@app.post("/system/stop")
+def stop_sentry_system():
+    """
+    Stop the sentry service (camera + tracking).
+    Keeps the backend API running, just stops the camera/tracking.
+    """
+    global sentry
+    
+    try:
+        if not sentry or not sentry.running:
+            return {"status": "already_stopped", "message": "Sentry is not running"}
+        
+        sentry.stop()
+        
+        return {
+            "status": "success",
+            "message": "Sentry service stopped",
+            "running": False
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to stop sentry: {str(e)}")
+
+
+@app.post("/system/restart")
+def restart_sentry_system():
+    """
+    Restart the sentry service (camera + tracking).
+    """
+    global sentry
+    
+    try:
+        # Stop if running
+        if sentry and sentry.running:
+            sentry.stop()
+        
+        # Reinitialize and start
+        sentry = SentryService()
+        sentry.start()
+        
+        return {
+            "status": "success",
+            "message": "Sentry service restarted",
+            "running": True
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to restart sentry: {str(e)}")
+
+
+@app.get("/system/status")
+def get_system_status():
+    """
+    Get current status of the sentry system.
+    """
+    global sentry
+    
+    return {
+        "sentry_available": SENTRY_AVAILABLE,
+        "sentry_initialized": sentry is not None,
+        "sentry_running": sentry.running if sentry else False,
+        "stats": sentry.get_stats() if (sentry and sentry.running) else None
+    }
 
 
 def generate_frames():

@@ -35,8 +35,8 @@ except ImportError:
 
 # Camera settings
 CAMERA_INDEX = 0
-CAMERA_WIDTH = 800
-CAMERA_HEIGHT = 600
+CAMERA_WIDTH = 640
+CAMERA_HEIGHT = 480
 TARGET_FPS = 30
 
 # Servo settings
@@ -79,8 +79,7 @@ FACE_DETECTION_SKIP_FRAMES = 5  # Run face detection every N frames when target 
 
 # Snapshot parameters
 SNAPSHOT_INTERVAL = 15  # Seconds between snapshots for same person
-SNAPSHOT_DIR = "snapshots"  # Directory to save snapshots
-ENABLE_GEMINI_ANALYSIS = True  # Enable Gemini AI analysis of snapshots
+ENABLE_GEMINI_ANALYSIS = True  # Enable Gemini AI analysis of snapshots (uploads to Supabase)
 
 
 # ========================================
@@ -252,9 +251,7 @@ class SentryService:
         self.last_face_center = None  # Cache last face detection
         self.face_frame_counter = 0
         
-        # Snapshot tracking (initialize BEFORE starting threads)
-        self.snapshot_dir = Path(SNAPSHOT_DIR)
-        self.snapshot_dir.mkdir(exist_ok=True)
+        # Snapshot tracking (in-memory only, no local storage)
         self.track_snapshots = {}  # {track_id: last_snapshot_time}
         self.seen_track_ids = set()  # Set of all track IDs seen
         self.snapshot_queue = Queue()  # Queue for Gemini analysis
@@ -329,7 +326,7 @@ class SentryService:
             'total_people_seen': len(self.seen_track_ids),
             'active_snapshots': len(self.track_snapshots),
             'pending_analyses': self.snapshot_queue.qsize(),
-            'snapshot_directory': str(self.snapshot_dir),
+            'storage_mode': 'supabase_only',
             'gemini_enabled': ENABLE_GEMINI_ANALYSIS
         }
 
@@ -387,7 +384,15 @@ class SentryService:
 
     def get_stats(self) -> Dict[str, Any]:
         """Get current stats for API."""
-        return self.stats.copy()
+        # Ensure all values are JSON serializable (convert numpy types to Python types)
+        stats = self.stats.copy()
+        return {
+            'fps': float(stats.get('fps', 0)),
+            'tracking_status': str(stats.get('tracking_status', 'UNKNOWN')),
+            'pan_angle': float(stats.get('pan_angle', 90)),
+            'tilt_angle': float(stats.get('tilt_angle', 90)),
+            'people_count': int(stats.get('people_count', 0))
+        }
 
     def _process_commands(self):
         """Process commands from the queue."""
@@ -742,7 +747,8 @@ class SentryService:
 
     def _take_snapshot(self, frame, track_id, bbox, is_new=False):
         """
-        Take a snapshot of the tracked person.
+        Take a snapshot of the tracked person and queue for Gemini analysis.
+        Snapshot is kept in memory only, not saved to disk.
         
         Args:
             frame: Current video frame
@@ -774,25 +780,21 @@ class SentryService:
             # Update last snapshot time
             self.track_snapshots[track_id] = current_time
             
-            # Create filename with timestamp and track ID
+            # Encode frame to JPEG in memory (no disk save)
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            filename = f"person_{track_id}_{timestamp}_{reason}.jpg"
-            filepath = self.snapshot_dir / filename
-            
-            # Save the full frame (we'll crop in Gemini analysis if needed)
-            cv2.imwrite(str(filepath), frame)
+            _, img_encoded = cv2.imencode('.jpg', frame)
             
             # Queue for Gemini analysis
             if ENABLE_GEMINI_ANALYSIS:
                 self.snapshot_queue.put({
-                    'filepath': filepath,
+                    'image_data': img_encoded.tobytes(),  # Raw JPEG bytes
                     'track_id': track_id,
                     'bbox': bbox,
                     'timestamp': timestamp,
                     'reason': reason
                 })
             
-            print(f"[SNAPSHOT] Saved: {filename} (reason: {reason})")
+            print(f"[SNAPSHOT] Queued person_{track_id}_{timestamp}_{reason} for analysis (memory only)")
     
     def _check_periodic_snapshot(self, frame, track_id, bbox):
         """
@@ -814,6 +816,7 @@ class SentryService:
         """
         Background worker that processes snapshots through Gemini API,
         uploads to Supabase, and sends Discord alerts.
+        Does NOT save files locally - everything goes directly to Supabase.
         Runs in a separate thread to avoid blocking the main loop.
         """
         print("[GEMINI] Worker thread started")
@@ -825,7 +828,7 @@ class SentryService:
             print("[GEMINI] Successfully imported analyzer")
         except Exception as e:
             print(f"[GEMINI] Failed to import analyzer: {e}")
-            print("[GEMINI] Snapshots will be saved but not analyzed")
+            print("[GEMINI] Worker disabled - analyzer not available")
             return
         
         # Import Supabase and Discord alert function
@@ -845,14 +848,11 @@ class SentryService:
                 print("[GEMINI] Supabase integration enabled")
             else:
                 supabase_enabled = False
-                print("[GEMINI] Supabase not configured - logs only mode")
+                print("[GEMINI] ERROR: Supabase not configured - worker disabled")
+                return
         except Exception as e:
             print(f"[GEMINI] Failed to initialize Supabase: {e}")
-            supabase_enabled = False
-        
-        # Create logs directory
-        logs_dir = Path("logs/gemini_analysis")
-        logs_dir.mkdir(parents=True, exist_ok=True)
+            return
         
         while self.running:
             try:
@@ -862,49 +862,40 @@ class SentryService:
                 except:
                     continue
                 
-                filepath = snapshot_data['filepath']
+                image_data = snapshot_data['image_data']
                 track_id = snapshot_data['track_id']
                 reason = snapshot_data['reason']
                 timestamp_str = snapshot_data['timestamp']
                 
                 print(f"[GEMINI] Analyzing snapshot for person {track_id}...")
                 
-                # Analyze with Gemini
-                result = analyze_security_image(str(filepath))
+                # Create temporary file for Gemini analysis (will be deleted after)
+                import tempfile
+                with tempfile.NamedTemporaryFile(suffix='.jpg', delete=False) as tmp_file:
+                    tmp_file.write(image_data)
+                    tmp_filepath = tmp_file.name
                 
-                # Add tracking metadata
-                result['track_id'] = track_id
-                result['reason'] = reason
-                result['snapshot_file'] = str(filepath)
-                
-                # Save analysis result locally
-                log_filename = logs_dir / f"analysis_{track_id}_{timestamp_str}.json"
-                with open(log_filename, 'w') as f:
-                    import json
-                    json.dump(result, f, indent=2)
-                
-                # Print summary
-                if result['status'] == 'success':
-                    severity_emoji = {
-                        'info': 'ℹ️',
-                        'warning': '⚠️',
-                        'critical': '🚨'
-                    }
-                    emoji = severity_emoji.get(result.get('severity', 'info'), 'ℹ️')
-                    print(f"[GEMINI] {emoji} Person {track_id}: {result['analysis']}")
+                try:
+                    # Analyze with Gemini
+                    result = analyze_security_image(tmp_filepath)
                     
-                    # Upload to Supabase if enabled
-                    if supabase_enabled:
+                    # Print summary
+                    if result['status'] == 'success':
+                        severity_emoji = {
+                            'info': 'ℹ️',
+                            'warning': '⚠️',
+                            'critical': '🚨'
+                        }
+                        emoji = severity_emoji.get(result.get('severity', 'info'), 'ℹ️')
+                        print(f"[GEMINI] {emoji} Person {track_id}: {result['analysis']}")
+                        
+                        # Upload to Supabase
                         try:
-                            # Read image file
-                            with open(filepath, 'rb') as img_file:
-                                image_content = img_file.read()
-                            
                             # Upload to Supabase Storage
                             storage_filename = f"person_{track_id}_{timestamp_str}_{reason}.jpg"
                             supabase.storage.from_("security-frames").upload(
                                 path=storage_filename,
-                                file=image_content,
+                                file=image_data,
                                 file_options={"content-type": "image/jpeg"}
                             )
                             
@@ -938,8 +929,15 @@ class SentryService:
                                 
                         except Exception as e:
                             print(f"[SUPABASE] Error uploading snapshot: {e}")
-                else:
-                    print(f"[GEMINI] ❌ Analysis failed: {result.get('error', 'Unknown error')}")
+                    else:
+                        print(f"[GEMINI] ❌ Analysis failed: {result.get('error', 'Unknown error')}")
+                
+                finally:
+                    # Clean up temporary file
+                    try:
+                        os.unlink(tmp_filepath)
+                    except:
+                        pass
                 
                 # Mark task as done
                 self.snapshot_queue.task_done()

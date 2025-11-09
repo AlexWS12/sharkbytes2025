@@ -17,8 +17,8 @@ function App() {
             <VideoFeed />
           </div>
 
-          {/* Controls and Data - Bottom */}
-          <div className="h-48 bg-white rounded-3xl shadow-lg border border-blue-100 p-6">
+          {/* Camera Controls - Bottom */}
+          <div className="bg-white rounded-3xl shadow-lg border border-blue-100 p-6">
             <CameraControls />
           </div>
         </div>
