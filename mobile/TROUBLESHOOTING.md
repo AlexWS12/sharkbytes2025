@@ -2,7 +2,7 @@
 
 ## Common Issues and Solutions
 
-### 🔴 Error: EMFILE: too many open files
+###  Error: EMFILE: too many open files
 
 **Problem**: macOS has a low default limit for open file watchers, which Metro bundler exceeds.
 
@@ -71,39 +71,39 @@ npm start
 
 ---
 
-### 🔴 Network Error / Failed to fetch events
+###  Network Error / Failed to fetch events
 
 **Problem**: App can't connect to backend
 
 **Checklist**:
 
-1. ✅ **Backend is running**:
+1.  **Backend is running**:
    ```bash
    cd ../web
    python main.py
    ```
 
-2. ✅ **Correct IP address** in `src/config/api.config.js`:
+2.  **Correct IP address** in `src/config/api.config.js`:
    ```bash
    # Find your IP
    ifconfig | grep "inet " | grep -v 127.0.0.1
    ```
 
-3. ✅ **Same WiFi network**: Phone and computer must be on same network
+3.  **Same WiFi network**: Phone and computer must be on same network
 
-4. ✅ **Test backend in browser**:
+4.  **Test backend in browser**:
    ```
    http://YOUR_IP:8000/health
    http://YOUR_IP:8000/events
    ```
 
-5. ✅ **Firewall allows port 8000**:
+5.  **Firewall allows port 8000**:
    ```bash
    # macOS - check firewall
-   # System Settings → Network → Firewall
+   # System Settings --> Network --> Firewall
    ```
 
-6. ✅ **CORS configuration** in `web/main.py`:
+6.  **CORS configuration** in `web/main.py`:
    ```python
    allow_origins=[
        "http://localhost:5173",
@@ -113,7 +113,7 @@ npm start
 
 ---
 
-### 🔴 Metro Bundler Issues
+###  Metro Bundler Issues
 
 **Problem**: Metro bundler crashes or won't start
 
@@ -138,7 +138,7 @@ npm start
 
 ---
 
-### 🔴 iOS Simulator Not Opening
+###  iOS Simulator Not Opening
 
 **Problem**: `npm run ios` doesn't open simulator
 
@@ -165,27 +165,27 @@ npm start
 
 ---
 
-### 🔴 Images Not Loading
+###  Images Not Loading
 
 **Problem**: Event cards show but images don't load
 
 **Checklist**:
 
-1. ✅ **Valid image URLs**: Check in browser:
+1.  **Valid image URLs**: Check in browser:
    ```
    http://YOUR_IP:8000/events
    # Look at image_url field
    ```
 
-2. ✅ **Supabase permissions**: Images must be publicly accessible
+2.  **Supabase permissions**: Images must be publicly accessible
 
-3. ✅ **Network connection**: Check phone's internet
+3.  **Network connection**: Check phone's internet
 
-4. ✅ **Image URL format**: Should be full URL starting with `https://`
+4.  **Image URL format**: Should be full URL starting with `https://`
 
 ---
 
-### 🔴 App Shows "No Events Yet"
+###  App Shows "No Events Yet"
 
 **Problem**: Connected to backend but no events display
 
@@ -208,17 +208,17 @@ npm start
 
 ---
 
-### 🔴 Expo Go Not Connecting
+###  Expo Go Not Connecting
 
 **Problem**: QR code scanned but app won't open
 
 **Solutions**:
 
-1. ✅ **Latest Expo Go**: Update from App Store
+1.  **Latest Expo Go**: Update from App Store
 
-2. ✅ **Same network**: Phone and computer on same WiFi
+2.  **Same network**: Phone and computer on same WiFi
 
-3. ✅ **Firewall**: Disable temporarily to test
+3.  **Firewall**: Disable temporarily to test
 
 4. Try direct connection:
    ```bash
@@ -234,7 +234,7 @@ npm start
 
 ---
 
-### 🔴 Module Not Found Errors
+###  Module Not Found Errors
 
 **Problem**: `Error: Unable to resolve module`
 
@@ -254,7 +254,7 @@ npx expo start --clear
 
 ---
 
-### 🔴 Build/Bundle Errors
+###  Build/Bundle Errors
 
 **Problem**: App builds but crashes on launch
 
@@ -280,7 +280,7 @@ npx expo start --clear
 
 ---
 
-### 🔴 Slow Performance / Lag
+###  Slow Performance / Lag
 
 **Problem**: App is slow or janky
 
@@ -351,13 +351,13 @@ Save this as `reset.sh`:
 
 ```bash
 #!/bin/bash
-echo "🧹 Resetting SharkBytes Mobile..."
+echo " Resetting SharkBytes Mobile..."
 rm -rf node_modules
 rm -rf .expo
 rm -rf package-lock.json
 ulimit -n 4096
 npm install
-echo "✅ Reset complete! Run: npm start"
+echo " Reset complete! Run: npm start"
 ```
 
 Make executable and run:

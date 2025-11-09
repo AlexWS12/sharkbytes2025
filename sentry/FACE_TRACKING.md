@@ -40,17 +40,17 @@ FACE_MIN_SIZE = (30, 30)       # Minimum face size in pixels
 1. **Person Detection**: YOLO detects person bounding box
 2. **Face Detection**: Within person bbox, Haar Cascade finds faces
 3. **Target Selection**:
-   - If face found → Use face center for servo control
-   - If no face → Fall back to body center
+   - If face found --> Use face center for servo control
+   - If no face --> Fall back to body center
 4. **Visual Indication**: UI shows yellow marker when tracking face
 
 ## Benefits
 
-- ✅ More natural tracking (follows head movement)
-- ✅ Better centering for face-level interactions
-- ✅ Smooth fallback to body tracking when face not visible
-- ✅ Clear visual feedback showing tracking mode
-- ✅ No performance impact when face not detected
+-  More natural tracking (follows head movement)
+-  Better centering for face-level interactions
+-  Smooth fallback to body tracking when face not visible
+-  Clear visual feedback showing tracking mode
+-  No performance impact when face not detected
 
 ## Tuning Parameters
 

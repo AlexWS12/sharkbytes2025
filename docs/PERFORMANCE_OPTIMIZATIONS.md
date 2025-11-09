@@ -152,7 +152,7 @@ DETECTION_SKIP_FRAMES = 5       # Run YOLO every 5th frame
 TRACKING_UPDATE_SKIP = 5        # Run DeepSORT every 5th frame
 FACE_DETECTION_SKIP_FRAMES = 10 # Run face detection every 10th frame
 ```
-⚠️ **Trade-off:** Higher skip rates = faster FPS but less responsive tracking
+WARNING: **Trade-off:** Higher skip rates = faster FPS but less responsive tracking
 
 ## Expected Results
 
@@ -161,7 +161,7 @@ FACE_DETECTION_SKIP_FRAMES = 10 # Run face detection every 10th frame
 
 ### Breakdown:
 - YOLO frame skipping (every 3rd): 3x speedup
-- Reduced YOLO imgsz (320→160): 2x speedup
+- Reduced YOLO imgsz (320-->160): 2x speedup
 - DeepSORT frame skipping (every 3rd): 3x speedup
 - Face detection optimization: Additional 20% speedup
 - JPEG encoding: 20% speedup

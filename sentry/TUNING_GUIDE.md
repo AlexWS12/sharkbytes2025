@@ -12,19 +12,19 @@
 
 ### Current Optimizations Applied:### Current Optimizations Applied:
 
-- ✅ Small camera resolution: 320x320 for speed- ✅ Small camera resolution: 320x320 for speed
+-  Small camera resolution: 320x320 for speed-  Small camera resolution: 320x320 for speed
 
-- ✅ Smooth servo control: KP=0.020, MAX_STEP=1.5°- ✅ Smooth servo control: KP=0.020, MAX_STEP=1.5°
+-  Smooth servo control: KP=0.020, MAX_STEP=1.5deg-  Smooth servo control: KP=0.020, MAX_STEP=1.5deg
 
-- ✅ Exponential smoothing: 0.3 factor for gimbal-like motion- ✅ Exponential smoothing: 0.3 factor for gimbal-like motion
+-  Exponential smoothing: 0.3 factor for gimbal-like motion-  Exponential smoothing: 0.3 factor for gimbal-like motion
 
-- ✅ PD control: KD=0.25 for damping- ✅ PD control: KD=0.25 for damping
+-  PD control: KD=0.25 for damping-  PD control: KD=0.25 for damping
 
-- ✅ Deadband: 25px to reduce jitter- ✅ Deadband: 25px to reduce jitter
+-  Deadband: 25px to reduce jitter-  Deadband: 25px to reduce jitter
 
-- ✅ YOLO optimized: YOLOv11n, person-only detection- ✅ YOLO optimized: YOLOv11n, person-only detection
+-  YOLO optimized: YOLOv11n, person-only detection-  YOLO optimized: YOLOv11n, person-only detection
 
-- ✅ Frame processing: Every frame for smooth tracking- ✅ Frame processing: Every frame for smooth tracking
+-  Frame processing: Every frame for smooth tracking-  Frame processing: Every frame for smooth tracking
 
 
 
@@ -220,13 +220,13 @@ CAMERA_WIDTH = 320       # Already optimized---
 
 **Edit:** `config/settings.py`|----------|-----|----------|----------|---------|
 
-| Too slow | ⬆️ 0.10 | ⬆️ 10° | Same | Faster response |
+| Too slow | UP 0.10 | UP 10deg | Same | Faster response |
 
-```python| Too jerky | ⬇️ 0.04 | ⬇️ 4° | ⬆️ 30px | Smoother motion |
+```python| Too jerky | DOWN 0.04 | DOWN 4deg | UP 30px | Smoother motion |
 
-TARGET_LOST_TIMEOUT = 3.0  # Increase from 2.0 seconds| Jitters in center | Same | ⬇️ 3° | ⬆️ 40px | Stable when centered |
+TARGET_LOST_TIMEOUT = 3.0  # Increase from 2.0 seconds| Jitters in center | Same | DOWN 3deg | UP 40px | Stable when centered |
 
-```| Overshoots | ⬇️ 0.06 | ⬇️ 5° | Same | Less overshoot |
+```| Overshoots | DOWN 0.06 | DOWN 5deg | Same | Less overshoot |
 
 
 
@@ -250,7 +250,7 @@ TARGET_LOST_TIMEOUT = 3.0  # Increase from 2.0 seconds| Jitters in center | Same
 
     print(f"[TRACK] Error X: {error_x:+4.0f}px  Error Y: {error_y:+4.0f}px | "
 
-```python          f"Delta Pan: {delta_pan:+.2f}°  Delta Tilt: {delta_tilt:+.2f}°")
+```python          f"Delta Pan: {delta_pan:+.2f}deg  Delta Tilt: {delta_tilt:+.2f}deg")
 
 # Pan limits (horizontal)```
 
@@ -292,7 +292,7 @@ TILT_DEFAULT = 80  # Slightly down
 
 - KP: 0.08
 
-**Edit:** `config/settings.py`- Max Step: 8°
+**Edit:** `config/settings.py`- Max Step: 8deg
 
 - Deadband: 20px
 
@@ -510,23 +510,23 @@ Displayed below status showing current Pan/Tilt
 ## Common Issues & Solutions
 
 ### Servo Moves Too Fast
-→ Lower `MAX_SERVO_STEP`  
-→ Lower `KP`
+--> Lower `MAX_SERVO_STEP`  
+--> Lower `KP`
 
 ### Servo Too Slow
-→ Increase `MAX_SERVO_STEP`  
-→ Increase `KP`
+--> Increase `MAX_SERVO_STEP`  
+--> Increase `KP`
 
 ### Jittery Near Center
-→ Increase `DEADBAND_X` and `DEADBAND_Y`
+--> Increase `DEADBAND_X` and `DEADBAND_Y`
 
 ### Overshoots Target
-→ Increase `KD`  
-→ Lower `SMOOTHING_FACTOR`
+--> Increase `KD`  
+--> Lower `SMOOTHING_FACTOR`
 
 ### Lags Behind Fast Movement
-→ Increase `SMOOTHING_FACTOR`  
-→ Increase `KP`
+--> Increase `SMOOTHING_FACTOR`  
+--> Increase `KP`
 
 ---
 

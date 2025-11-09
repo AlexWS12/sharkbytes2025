@@ -13,10 +13,10 @@ print("="*60)
 # Test TensorRT import
 try:
     import tensorrt as trt
-    print(f"✓ TensorRT version: {trt.__version__}")
-    print(f"✓ TensorRT Builder: {trt.Builder is not None}")
+    print(f"[OK] TensorRT version: {trt.__version__}")
+    print(f"[OK] TensorRT Builder: {trt.Builder is not None}")
 except ImportError as e:
-    print(f"✗ TensorRT import failed: {e}")
+    print(f"[FAIL] TensorRT import failed: {e}")
     sys.exit(1)
 
 # Test dependencies
@@ -25,13 +25,13 @@ try:
     import torch
     import onnx
     
-    print(f"✓ Ultralytics YOLO available")
-    print(f"✓ PyTorch version: {torch.__version__}")
-    print(f"✓ CUDA available: {torch.cuda.is_available()}")
-    print(f"✓ ONNX version: {onnx.__version__}")
+    print(f"[OK] Ultralytics YOLO available")
+    print(f"[OK] PyTorch version: {torch.__version__}")
+    print(f"[OK] CUDA available: {torch.cuda.is_available()}")
+    print(f"[OK] ONNX version: {onnx.__version__}")
     
 except ImportError as e:
-    print(f"✗ Missing dependency: {e}")
+    print(f"[FAIL] Missing dependency: {e}")
     sys.exit(1)
 
 print("\n" + "="*60)
@@ -59,9 +59,9 @@ except KeyboardInterrupt:
 
 # Export to TensorRT
 try:
-    print("\n📦 Loading YOLO11n model...")
+    print("\n Loading YOLO11n model...")
     model = YOLO('yolo11n.pt')
-    print("✓ YOLO11n model loaded")
+    print("[OK] YOLO11n model loaded")
     
     print("\n🔄 Exporting to TensorRT engine...")
     print("   This will take 3-5 minutes...")
@@ -79,11 +79,11 @@ try:
         verbose=False              # Reduce output spam
     )
     
-    print(f"\n✓ TensorRT engine exported successfully!")
-    print(f"✓ Engine saved to: {engine_path}")
+    print(f"\n[OK] TensorRT engine exported successfully!")
+    print(f"[OK] Engine saved to: {engine_path}")
     
     if os.path.exists(engine_path):
-        print(f"✓ File size: {os.path.getsize(engine_path) / (1024*1024):.2f} MB")
+        print(f"[OK] File size: {os.path.getsize(engine_path) / (1024*1024):.2f} MB")
     
     print("\n" + "="*60)
     print("SUCCESS! TensorRT engine is ready")
@@ -98,7 +98,7 @@ except KeyboardInterrupt:
     print("\n\nExport interrupted by user")
     sys.exit(1)
 except Exception as e:
-    print(f"\n✗ Error during export: {e}")
+    print(f"\n[FAIL] Error during export: {e}")
     import traceback
     traceback.print_exc()
     print("\nTroubleshooting:")

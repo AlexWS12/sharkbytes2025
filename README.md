@@ -21,32 +21,32 @@ Visit http://localhost:5173 to view the frontend.
 
 ```
 sharkbytes2025/
-├── docs/                    # Documentation
-│   ├── README.md           # Main documentation
-│   ├── QUICK_START.md      # Quick start guide
-│   ├── INTEGRATION_GUIDE.md
-│   ├── PERFORMANCE_OPTIMIZATIONS.md
-│   ├── TENSORRT_SETUP.md
-│   └── ...
-├── models/                  # AI models
-│   ├── yolo11n.pt          # Base YOLO model
-│   ├── yolo11n.onnx        # ONNX intermediate
-│   └── yolo11n_160_fp16.engine  # TensorRT optimized
-├── scripts/                 # Setup and control scripts
-│   ├── setup_venv.sh       # Virtual environment setup
-│   ├── start_project.sh    # Start all services
-│   ├── stop_project.sh     # Stop all services
-│   └── status_project.sh   # Check service status
-├── tests/                   # Test and build scripts
-│   ├── test_analyze_frame.py
-│   ├── test_tensorrt.py
-│   └── build_tensorrt_engine.py
-├── sentry/                  # Sentry tracking service
-├── web/                     # FastAPI backend
-├── frontend/                # React frontend
-├── mobile/                  # React Native mobile app
-├── gemini/                  # Gemini AI integration
-└── requirements.txt         # Python dependencies
++-- docs/                    # Documentation
+|   +-- README.md           # Main documentation
+|   +-- QUICK_START.md      # Quick start guide
+|   +-- INTEGRATION_GUIDE.md
+|   +-- PERFORMANCE_OPTIMIZATIONS.md
+|   +-- TENSORRT_SETUP.md
+|   └-- ...
++-- models/                  # AI models
+|   +-- yolo11n.pt          # Base YOLO model
+|   +-- yolo11n.onnx        # ONNX intermediate
+|   └-- yolo11n_160_fp16.engine  # TensorRT optimized
++-- scripts/                 # Setup and control scripts
+|   +-- setup_venv.sh       # Virtual environment setup
+|   +-- start_project.sh    # Start all services
+|   +-- stop_project.sh     # Stop all services
+|   └-- status_project.sh   # Check service status
++-- tests/                   # Test and build scripts
+|   +-- test_analyze_frame.py
+|   +-- test_tensorrt.py
+|   └-- build_tensorrt_engine.py
++-- sentry/                  # Sentry tracking service
++-- web/                     # FastAPI backend
++-- frontend/                # React frontend
++-- mobile/                  # React Native mobile app
++-- gemini/                  # Gemini AI integration
+└-- requirements.txt         # Python dependencies
 ```
 
 ## Features

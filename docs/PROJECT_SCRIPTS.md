@@ -1,10 +1,10 @@
-# 🦈 SharkBytes 2025 - Quick Start Scripts
+#  SharkBytes 2025 - Quick Start Scripts
 
 Easy-to-use scripts to manage your entire SharkBytes project.
 
-## 📋 Available Scripts
+##  Available Scripts
 
-### 🚀 Start Everything
+###  Start Everything
 ```bash
 ./start_project.sh
 ```
@@ -15,35 +15,35 @@ Starts all services:
 
 All services run in the background with logs saved to `logs/` directory.
 
-### 🛑 Stop Everything
+###  Stop Everything
 ```bash
 ./stop_project.sh
 ```
 Gracefully stops all running services.
 
-### 📊 Check Status
+###  Check Status
 ```bash
 ./status_project.sh
 ```
 Shows which services are running and their status.
 
-## 📁 Project Structure
+##  Project Structure
 
 ```
 sharkbytes2025/
-├── start_project.sh     # Start all services
-├── stop_project.sh      # Stop all services
-├── status_project.sh    # Check service status
-├── logs/                # Service logs (auto-created)
-│   ├── backend.log
-│   └── frontend.log
-├── .pids/               # Process ID files (auto-created)
-├── web/                 # Backend (FastAPI)
-├── frontend/            # Frontend (React)
-└── sentry/              # Person tracking service
++-- start_project.sh     # Start all services
++-- stop_project.sh      # Stop all services
++-- status_project.sh    # Check service status
++-- logs/                # Service logs (auto-created)
+|   +-- backend.log
+|   └-- frontend.log
++-- .pids/               # Process ID files (auto-created)
++-- web/                 # Backend (FastAPI)
++-- frontend/            # Frontend (React)
+└-- sentry/              # Person tracking service
 ```
 
-## 🔧 First Time Setup
+##  First Time Setup
 
 Before using these scripts for the first time:
 
@@ -63,7 +63,7 @@ Before using these scripts for the first time:
    cd frontend && npm install
    ```
 
-## 📝 View Logs
+##  View Logs
 
 ### Tail backend logs:
 ```bash
@@ -131,7 +131,7 @@ Once started:
 - **Video Feed:** http://localhost:5000/video_feed
 - **Sentry Stats:** http://localhost:5000/sentry/stats
 
-## ⚙️ Configuration
+##  Configuration
 
 ### Backend (port 5000)
 Edit `web/main.py` or use environment variables in `.env`

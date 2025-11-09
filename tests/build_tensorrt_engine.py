@@ -38,7 +38,7 @@ def build_engine(onnx_file, engine_file, fp16=True, workspace=2):
                 print(parser.get_error(error))
             return None
     
-    print(f"✓ ONNX parsed successfully")
+    print(f"[OK] ONNX parsed successfully")
     print(f"  Network inputs: {network.num_inputs}")
     print(f"  Network outputs: {network.num_outputs}")
     
@@ -47,10 +47,10 @@ def build_engine(onnx_file, engine_file, fp16=True, workspace=2):
     config.set_memory_pool_limit(trt.MemoryPoolType.WORKSPACE, workspace * (1 << 30))  # GB to bytes
     
     if fp16 and builder.platform_has_fast_fp16:
-        print("✓ FP16 mode enabled")
+        print("[OK] FP16 mode enabled")
         config.set_flag(trt.BuilderFlag.FP16)
     else:
-        print("⚠ FP16 not available, using FP32")
+        print("[WARNING] FP16 not available, using FP32")
     
     # Build engine
     print("\nBuilding TensorRT engine...")
@@ -63,14 +63,14 @@ def build_engine(onnx_file, engine_file, fp16=True, workspace=2):
         return None
     
     # Save engine
-    print(f"\n✓ Engine built successfully")
+    print(f"\n[OK] Engine built successfully")
     print(f"Saving to {engine_file}...")
     
     with open(engine_file, 'wb') as f:
         f.write(serialized_engine)
     
     engine_size = os.path.getsize(engine_file) / (1024 * 1024)
-    print(f"✓ Engine saved: {engine_size:.2f} MB")
+    print(f"[OK] Engine saved: {engine_size:.2f} MB")
     
     return engine_file
 

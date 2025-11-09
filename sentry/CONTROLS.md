@@ -7,7 +7,7 @@
 | Key | Action | Description |
 |-----|--------|-------------|
 | **L** | Lock Toggle | Turn auto-tracking ON/OFF |
-| **C** | Center | Return servos to default position (90°, 90°) |
+| **C** | Center | Return servos to default position (90deg, 90deg) |
 | **Q** | Quit | Exit the program |
 
 ---
@@ -40,7 +40,7 @@ Press **L** to:
 
 ### When Unlocked:
 - Press **C** to center servos
-- Servos move to: Pan=90°, Tilt=90°
+- Servos move to: Pan=90deg, Tilt=90deg
 - Sweep position also resets
 - Useful for:
   - Starting from neutral position
@@ -61,7 +61,7 @@ Press **L** to:
 1. Start system (auto-lock ON by default)
 2. System detects and locks to first person
 3. Tracks person automatically
-4. Person leaves → unlocks after 2 seconds → resumes sweep
+4. Person leaves --> unlocks after 2 seconds --> resumes sweep
 
 ### Scenario 2: Manual Control
 1. Press **L** to disable auto-lock
@@ -140,11 +140,11 @@ You'll see these messages when pressing keys:
 
 ## Quick Reference Card
 
-**Want to stop tracking?** → Press **L**  
-**Want to center camera?** → Press **C** (if unlocked)  
-**Want to resume tracking?** → Press **L** again  
-**Want to quit?** → Press **Q**
+**Want to stop tracking?** --> Press **L**  
+**Want to center camera?** --> Press **C** (if unlocked)  
+**Want to resume tracking?** --> Press **L** again  
+**Want to quit?** --> Press **Q**
 
 ---
 
-**Default State**: Auto-lock ON, servos centered at 90°/90°
+**Default State**: Auto-lock ON, servos centered at 90deg/90deg

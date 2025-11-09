@@ -2,22 +2,22 @@
 
 ## App Features
 
-### 🔴 Real-Time Monitoring
+###  Real-Time Monitoring
 - **Auto-refresh**: Polls backend every 5 seconds for new events
 - **Live indicator**: Animated pulse shows connection status
 - **Background updates**: Continues fetching even when viewing details
 
-### 📊 Activity Log Display
+###  Activity Log Display
 - **Card-based interface**: Clean, modern design
 - **Severity color-coding**:
-  - 🔵 **INFO** - Blue (normal activities)
-  - 🟡 **WARNING** - Yellow (suspicious activities)
-  - 🔴 **CRITICAL** - Red (immediate threats)
+  -  **INFO** - Blue (normal activities)
+  -  **WARNING** - Yellow (suspicious activities)
+  -  **CRITICAL** - Red (immediate threats)
 - **Smart timestamps**: Shows relative time (e.g., "5m ago", "2h ago")
 - **Event thumbnails**: Preview images on each card
 - **Event counter**: See total events at a glance
 
-### 🔍 Detailed Event View
+###  Detailed Event View
 - **Full-screen modal**: Tap any event to see details
 - **High-resolution images**: View captured frames in full quality
 - **Complete metadata**:
@@ -28,24 +28,24 @@
   - Event ID
 - **Easy navigation**: Close with X button or swipe down
 
-### 📈 Statistics Dashboard
+###  Statistics Dashboard
 - **Total events**: See count of all logged events
 - **Critical events**: Quick view of urgent items
 - **Warning events**: Track suspicious activities
 - **Color-coded stats**: Matches severity colors
 
-### 🔄 Pull-to-Refresh
+###  Pull-to-Refresh
 - **Manual refresh**: Swipe down to reload instantly
 - **Visual feedback**: Spinner shows refresh in progress
 - **Smart loading**: Doesn't interfere with auto-refresh
 
-### ⚠️ Error Handling
+### WARNING: Error Handling
 - **Connection errors**: Clear messages when backend is unreachable
 - **Retry button**: Easy one-tap reconnection
 - **Empty states**: Helpful messages when no events exist
 - **Loading states**: Smooth transitions and spinners
 
-### 📱 iOS Optimizations
+###  iOS Optimizations
 - **Safe area support**: Works perfectly with notches and islands
 - **Native feel**: Uses iOS design patterns
 - **Smooth animations**: 60 FPS scrolling and transitions
@@ -106,17 +106,17 @@
 
 ```
 Backend (FastAPI)
-    ↓
+    |
 /events endpoint
-    ↓
+    |
 ApiService.getEvents()
-    ↓
+    |
 ActivityLogScreen (polling every 5s)
-    ↓
-FlatList → EventCard
-    ↓
+    |
+FlatList --> EventCard
+    |
 Tap event
-    ↓
+    |
 EventDetail modal
 ```
 

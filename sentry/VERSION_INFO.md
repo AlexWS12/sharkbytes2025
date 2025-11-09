@@ -2,7 +2,7 @@
 
 
 
-## Current Installation ✅## Current Package Versions ✅
+## Current Installation ## Current Package Versions 
 
 
 
@@ -22,25 +22,25 @@
 
 | **DeepSORT** | 1.3.2 | Multi-object tracking |
 
-| **Adafruit ServoKit** | 1.3.22 | PCA9685 servo control |## YOLO Model Upgrade ⚡
+| **Adafruit ServoKit** | 1.3.22 | PCA9685 servo control |## YOLO Model Upgrade 
 
 | **Jetson.GPIO** | 2.1.12 | Jetson GPIO interface |
 
-### Changed from YOLOv8n → YOLOv11n
+### Changed from YOLOv8n --> YOLOv11n
 
 ## CUDA Status
 
 **YOLOv11 Benefits:**
 
-```- ✅ **~22% faster** inference than YOLOv8
+```-  **~22% faster** inference than YOLOv8
 
-CUDA Build:      12.6- ✅ **Higher mAP** (mean Average Precision) - better detection accuracy
+CUDA Build:      12.6-  **Higher mAP** (mean Average Precision) - better detection accuracy
 
-CUDA Available:  ✓ Yes- ✅ **Smaller model size** - same parameters, better optimization
+CUDA Available:  [OK] Yes-  **Smaller model size** - same parameters, better optimization
 
-GPU Device:      Orin- ✅ **Improved person detection** at various distances
+GPU Device:      Orin-  **Improved person detection** at various distances
 
-```- ✅ **Better handling of occlusions** and partial views
+```-  **Better handling of occlusions** and partial views
 
 
 
@@ -54,7 +54,7 @@ We use **YOLOv11n** (nano) for optimal performance:| Model | Parameters | Speed 
 
 | Metric | YOLOv8n | YOLOv11n | Improvement || YOLOv8n | 3.2M | 80 | 37.3 | Old baseline |
 
-|--------|---------|----------|-------------|| **YOLOv11n** | **2.6M** | **~62** | **39.5** | **Current ⭐** |
+|--------|---------|----------|-------------|| **YOLOv11n** | **2.6M** | **~62** | **39.5** | **Current *** |
 
 | Parameters | 3.2M | 2.6M | -19% || YOLOv11s | 9.4M | ~110 | 47.0 | More accuracy |
 
@@ -76,7 +76,7 @@ We use **YOLOv11n** (nano) for optimal performance:| Model | Parameters | Speed 
 
 ### Detection PipelineCAMERA_WIDTH = 320      # Small for max FPS
 
-- Resolution: 320×320 (optimal for speed/quality)CAMERA_HEIGHT = 320     # Square for YOLO
+- Resolution: 320x320 (optimal for speed/quality)CAMERA_HEIGHT = 320     # Square for YOLO
 
 - Model: yolo11n.pt (nano for real-time)TARGET_FPS = 30
 
@@ -108,11 +108,11 @@ Agnostic NMS: True     # Faster NMS
 
 - KD = 0.15 (derivative damping)```python
 
-- Max step: 3°/frameKP = 0.035              # Proportional gain (prevents overshoot)
+- Max step: 3deg/frameKP = 0.035              # Proportional gain (prevents overshoot)
 
 - Deadband: 25pxKD = 0.15               # Derivative gain (damping)
 
-MAX_SERVO_STEP = 3.0°   # Smooth motion
+MAX_SERVO_STEP = 3.0deg   # Smooth motion
 
 ### PerformanceDEADBAND = 25px         # Stable center
 
@@ -142,13 +142,13 @@ All packages installed from:Max age: 30 frames      # Track persistence
 
 - **FPS**: 10-15 fps
 
-✅ Tested on: Jetson Orin Nano (JetPack 6.x)  - **Latency**: ~60-100ms
+ Tested on: Jetson Orin Nano (JetPack 6.x)  - **Latency**: ~60-100ms
 
-✅ Python: 3.10.12  - **Detection Range**: 2-15 meters
+ Python: 3.10.12  - **Detection Range**: 2-15 meters
 
-✅ CUDA: 12.6  - **Tracking**: Smooth, no overshoot
+ CUDA: 12.6  - **Tracking**: Smooth, no overshoot
 
-✅ Architecture: ARM64 (aarch64)
+ Architecture: ARM64 (aarch64)
 
 ### With CUDA (Future):
 
@@ -186,11 +186,11 @@ pip install --upgrade adafruit-circuitpython-servokit2. **Lower confidence**: Se
 
 
 
-⚠️ **Do not upgrade PyTorch or NumPy** without testing - use versions specified in setup script.### To Improve Tracking Smoothness:
+WARNING: **Do not upgrade PyTorch or NumPy** without testing - use versions specified in setup script.### To Improve Tracking Smoothness:
 
 1. **Adjust KP**: Lower = slower, smoother (try 0.025-0.045)
 
----2. **Adjust MAX_STEP**: Lower = smoother (try 2-5°)
+---2. **Adjust MAX_STEP**: Lower = smoother (try 2-5deg)
 
 3. **Increase deadband**: Less jitter near center (try 30-40px)
 
@@ -236,13 +236,13 @@ After CUDA is working:
 
 ## Future Improvements
 
-1. ✅ YOLOv11 - **DONE**
-2. ⏳ CUDA PyTorch for Jetson
-3. 🔮 Consider YOLOv11s if detection quality needed
-4. 🔮 Implement integral term for PID control (currently PD)
-5. 🔮 Add face detection for tighter tracking
-6. 🔮 Multi-person queue system
+1.  YOLOv11 - **DONE**
+2. PENDING: CUDA PyTorch for Jetson
+3. FUTURE: Consider YOLOv11s if detection quality needed
+4. FUTURE: Implement integral term for PID control (currently PD)
+5. FUTURE: Add face detection for tighter tracking
+6. FUTURE: Multi-person queue system
 
 ---
 
-**Current Status**: Optimized with latest versions ✅
+**Current Status**: Optimized with latest versions 

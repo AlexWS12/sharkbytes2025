@@ -109,7 +109,7 @@ function SystemControls() {
       {/* Error Message */}
       {!systemStatus.sentry_available && (
         <div className="ml-4 text-sm text-yellow-600">
-          ⚠️ Service unavailable
+          Service unavailable
         </div>
       )}
     </div>

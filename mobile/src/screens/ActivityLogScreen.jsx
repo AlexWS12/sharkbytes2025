@@ -10,6 +10,7 @@ import {
   Animated,
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
+import { Ionicons } from '@expo/vector-icons';
 import EventCard from '../components/EventCard';
 import EventDetail from '../components/EventDetail';
 import ApiService from '../services/api.service';
@@ -196,7 +197,7 @@ const ActivityLogScreen = () => {
     if (error) {
       return (
         <View style={styles.centerContainer}>
-          <Text style={styles.errorIcon}>⚠️</Text>
+          <Ionicons name="alert-circle-outline" size={64} color="#F59E0B" />
           <Text style={styles.errorTitle}>Connection Error</Text>
           <Text style={styles.errorMessage}>{error}</Text>
           <Text style={styles.errorHint}>
@@ -214,7 +215,7 @@ const ActivityLogScreen = () => {
 
     return (
       <View style={styles.centerContainer}>
-        <Text style={styles.emptyIcon}>📋</Text>
+        <Ionicons name="clipboard-outline" size={64} color="#6B7280" />
         <Text style={styles.emptyTitle}>No Events Yet</Text>
         <Text style={styles.emptyMessage}>
           Activity logs will appear here when events are detected
@@ -259,9 +260,11 @@ const ActivityLogScreen = () => {
             {actionLoading ? (
               <ActivityIndicator size="small" color="#fff" />
             ) : (
-              <Text style={styles.toggleButtonText}>
-                {systemStatus.sentry_running ? '⏹' : '▶'}
-              </Text>
+              <Ionicons 
+                name={systemStatus.sentry_running ? 'stop' : 'play'} 
+                size={20} 
+                color="#fff" 
+              />
             )}
           </TouchableOpacity>
         </View>
@@ -399,10 +402,6 @@ const styles = StyleSheet.create({
   disabledButton: {
     backgroundColor: '#9CA3AF',
   },
-  toggleButtonText: {
-    fontSize: 18,
-    color: '#FFFFFF',
-  },
   statsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
@@ -448,10 +447,6 @@ const styles = StyleSheet.create({
     color: '#6B7280',
     fontWeight: '500',
   },
-  errorIcon: {
-    fontSize: 64,
-    marginBottom: 16,
-  },
   errorTitle: {
     fontSize: 22,
     fontWeight: '700',
@@ -480,10 +475,6 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 16,
     fontWeight: '600',
-  },
-  emptyIcon: {
-    fontSize: 64,
-    marginBottom: 16,
   },
   emptyTitle: {
     fontSize: 22,

@@ -16,9 +16,9 @@ print()
 print("Test 1: Checking ServoKit library...")
 try:
     from adafruit_servokit import ServoKit
-    print("✓ ServoKit library imported successfully")
+    print("[OK] ServoKit library imported successfully")
 except ImportError as e:
-    print(f"✗ Failed to import ServoKit: {e}")
+    print(f"[FAIL] Failed to import ServoKit: {e}")
     print("\nInstall with: pip install adafruit-circuitpython-servokit")
     sys.exit(1)
 
@@ -30,9 +30,9 @@ print("   Expected I2C address: 0x40")
 print("   Expected I2C bus: 1")
 try:
     kit = ServoKit(channels=16, address=0x40, frequency=50)
-    print("✓ PCA9685 initialized successfully")
+    print("[OK] PCA9685 initialized successfully")
 except Exception as e:
-    print(f"✗ Failed to initialize PCA9685: {e}")
+    print(f"[FAIL] Failed to initialize PCA9685: {e}")
     print("\nTroubleshooting:")
     print("  1. Check I2C connections (SDA, SCL)")
     print("  2. Verify PCA9685 is powered (VCC, GND)")
@@ -57,32 +57,32 @@ try:
     kit.servo[PAN_CHANNEL].set_pulse_width_range(500, 2500)
     kit.servo[TILT_CHANNEL].set_pulse_width_range(500, 2500)
     
-    # Optional: Set actuation range if servos don't reach full 180°
+    # Optional: Set actuation range if servos don't reach full 180deg
     # kit.servo[PAN_CHANNEL].actuation_range = 180
     # kit.servo[TILT_CHANNEL].actuation_range = 180
     
-    print(f"✓ Servos configured:")
+    print(f"[OK] Servos configured:")
     print(f"   Pan (X):  Channel {PAN_CHANNEL} (delay: {PAN_SPEED_DELAY}s)")
     print(f"   Tilt (Y): Channel {TILT_CHANNEL} (delay: {TILT_SPEED_DELAY}s)")
-    print(f"   Pulse width: 500-2500 μs")
+    print(f"   Pulse width: 500-2500 us")
 except Exception as e:
-    print(f"✗ Failed to configure servos: {e}")
+    print(f"[FAIL] Failed to configure servos: {e}")
     sys.exit(1)
 
 print()
 
 # Test 4: Center servos
-print("Test 4: Centering servos (90°)...")
+print("Test 4: Centering servos (90deg)...")
 try:
     kit.servo[PAN_CHANNEL].angle = 90
     time.sleep(PAN_SPEED_DELAY)
     kit.servo[TILT_CHANNEL].angle = 90
     time.sleep(TILT_SPEED_DELAY)
     time.sleep(1)
-    print("✓ Servos centered")
+    print("[OK] Servos centered")
     print("   Both servos should be at their center position")
 except Exception as e:
-    print(f"✗ Failed to center servos: {e}")
+    print(f"[FAIL] Failed to center servos: {e}")
     sys.exit(1)
 
 print()
@@ -96,16 +96,16 @@ print()
 
 try:
     movements = [
-        ("Center (90°, 90°)", 90, 90),
-        ("Pan Left (45°, 90°)", 45, 90),
-        ("Pan Right (135°, 90°)", 135, 90),
-        ("Center (90°, 90°)", 90, 90),
-        ("Tilt Up (90°, 45°)", 90, 45),
-        ("Tilt Down (90°, 135°)", 90, 135),
-        ("Center (90°, 90°)", 90, 90),
-        ("Diagonal (45°, 45°)", 45, 45),
-        ("Diagonal (135°, 135°)", 135, 135),
-        ("Center (90°, 90°)", 90, 90),
+        ("Center (90deg, 90deg)", 90, 90),
+        ("Pan Left (45deg, 90deg)", 45, 90),
+        ("Pan Right (135deg, 90deg)", 135, 90),
+        ("Center (90deg, 90deg)", 90, 90),
+        ("Tilt Up (90deg, 45deg)", 90, 45),
+        ("Tilt Down (90deg, 135deg)", 90, 135),
+        ("Center (90deg, 90deg)", 90, 90),
+        ("Diagonal (45deg, 45deg)", 45, 45),
+        ("Diagonal (135deg, 135deg)", 135, 135),
+        ("Center (90deg, 90deg)", 90, 90),
     ]
     
     for description, pan_angle, tilt_angle in movements:
@@ -116,10 +116,10 @@ try:
         time.sleep(TILT_SPEED_DELAY)  # Add delay after tilt movement
         time.sleep(1.0)  # Wait to observe the position
     
-    print("✓ Movement test complete")
+    print("[OK] Movement test complete")
     
 except Exception as e:
-    print(f"✗ Movement test failed: {e}")
+    print(f"[FAIL] Movement test failed: {e}")
     sys.exit(1)
 
 print()
@@ -130,10 +130,10 @@ print("=" * 50)
 print()
 print("Manual servo control (type command + Enter):")
 print("  Commands:")
-print("    w - Tilt up 5°")
-print("    s - Tilt down 5°")
-print("    a - Pan left 5°")
-print("    d - Pan right 5°")
+print("    w - Tilt up 5deg")
+print("    s - Tilt down 5deg")
+print("    a - Pan left 5deg")
+print("    d - Pan right 5deg")
 print("    c - Center both servos")
 print("    q - Quit")
 print()
@@ -145,7 +145,7 @@ pan_angle = 90
 tilt_angle = 90
 
 try:
-    print(f"Current -> Pan: {pan_angle}°  Tilt: {tilt_angle}°")
+    print(f"Current -> Pan: {pan_angle}deg  Tilt: {tilt_angle}deg")
     print("Enter command: ", end='', flush=True)
     
     while True:
@@ -163,22 +163,22 @@ try:
                 tilt_angle = max(0, tilt_angle - 5)
                 kit.servo[TILT_CHANNEL].angle = tilt_angle
                 time.sleep(TILT_SPEED_DELAY)
-                print(f"Tilt UP   -> Pan: {pan_angle:3d}°  Tilt: {tilt_angle:3d}°")
+                print(f"Tilt UP   -> Pan: {pan_angle:3d}deg  Tilt: {tilt_angle:3d}deg")
             elif key == 's':  # Tilt down
                 tilt_angle = min(180, tilt_angle + 5)
                 kit.servo[TILT_CHANNEL].angle = tilt_angle
                 time.sleep(TILT_SPEED_DELAY)
-                print(f"Tilt DOWN -> Pan: {pan_angle:3d}°  Tilt: {tilt_angle:3d}°")
+                print(f"Tilt DOWN -> Pan: {pan_angle:3d}deg  Tilt: {tilt_angle:3d}deg")
             elif key == 'a':  # Pan left
                 pan_angle = max(0, pan_angle - 5)
                 kit.servo[PAN_CHANNEL].angle = pan_angle
                 time.sleep(PAN_SPEED_DELAY)
-                print(f"Pan LEFT  -> Pan: {pan_angle:3d}°  Tilt: {tilt_angle:3d}°")
+                print(f"Pan LEFT  -> Pan: {pan_angle:3d}deg  Tilt: {tilt_angle:3d}deg")
             elif key == 'd':  # Pan right
                 pan_angle = min(180, pan_angle + 5)
                 kit.servo[PAN_CHANNEL].angle = pan_angle
                 time.sleep(PAN_SPEED_DELAY)
-                print(f"Pan RIGHT -> Pan: {pan_angle:3d}°  Tilt: {tilt_angle:3d}°")
+                print(f"Pan RIGHT -> Pan: {pan_angle:3d}deg  Tilt: {tilt_angle:3d}deg")
             elif key == 'c':  # Center - move gradually to reduce jitter
                 print("Centering (smooth movement)...")
                 # Move gradually to center to avoid jitter
@@ -211,7 +211,7 @@ try:
                 kit.servo[TILT_CHANNEL].angle = tilt_angle
                 time.sleep(TILT_SPEED_DELAY)
                 
-                print(f"CENTERED  -> Pan: {pan_angle:3d}°  Tilt: {tilt_angle:3d}°")
+                print(f"CENTERED  -> Pan: {pan_angle:3d}deg  Tilt: {tilt_angle:3d}deg")
             else:
                 print(f"Unknown command: '{key}'. Use w/a/s/d/c/q")
             
@@ -231,7 +231,7 @@ print("=" * 50)
 print()
 print("Summary:")
 print("  If all tests passed and servos moved smoothly:")
-print("    ✓ Hardware is working correctly")
+print("    [OK] Hardware is working correctly")
 print()
 print("  If X-axis (pan) servo jitters:")
 print("    1. Increase PAN_SPEED_DELAY in the script (currently 0.03s)")

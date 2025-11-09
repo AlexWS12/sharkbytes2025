@@ -1,20 +1,20 @@
 # PyTorch + CUDA Setup Guide
 
-## ✅ Complete Installation
+## Complete Installation
 
 The `requirements.txt` includes everything needed for GPU-accelerated tracking:
 
 ### What's Included:
-- ✅ **PyTorch 2.5.0 with CUDA 12.6** - GPU acceleration
-- ✅ **TorchVision 0.20.0** - Vision utilities
-- ✅ **YOLOv11** - Latest detection model
-- ✅ **DeepSORT** - Multi-object tracking
-- ✅ **ServoKit** - Hardware control
-- ✅ **OpenCV** - Camera interface
+- **PyTorch 2.5.0 with CUDA 12.6** - GPU acceleration
+- **TorchVision 0.20.0** - Vision utilities
+- **YOLOv11** - Latest detection model
+- **DeepSORT** - Multi-object tracking
+- **ServoKit** - Hardware control
+- **OpenCV** - Camera interface
 
 ---
 
-## 🚀 Quick Setup
+## Quick Setup
 
 ### 1. Install Dependencies
 
@@ -35,12 +35,12 @@ python verify_cuda.py
 
 **Expected Output:**
 ```
-✅ PyTorch installed: 2.5.0
-✅ CUDA available: YES
+PyTorch installed: 2.5.0
+CUDA available: YES
    CUDA Version: 12.6
    GPU Device: Orin
    GPU Memory: X.XX GB
-✅ YOLOv11n model loaded successfully
+YOLOv11n model loaded successfully
    Model will use: CUDA
 ```
 
@@ -52,7 +52,7 @@ python person_tracking_sentry.py
 
 ---
 
-## 🔍 CUDA Verification
+## CUDA Verification
 
 The system automatically detects and uses CUDA when available:
 
@@ -75,7 +75,7 @@ The system automatically detects and uses CUDA when available:
 
 ---
 
-## ⚡ Performance Expectations
+## Performance Expectations
 
 ### With CUDA (GPU):
 - **Inference**: 10-20ms per frame
@@ -89,7 +89,7 @@ The system automatically detects and uses CUDA when available:
 
 ---
 
-## 🔧 Troubleshooting
+## Troubleshooting
 
 ### CUDA Not Available
 
@@ -134,7 +134,7 @@ python verify_cuda.py
 
 ---
 
-## 📊 Benchmark Results
+## Benchmark Results
 
 Run the verification script to benchmark your system:
 
@@ -144,23 +144,23 @@ python verify_cuda.py
 
 **Expected Results (with CUDA):**
 ```
-📊 Results:
+Results:
    Average time: 15.2ms
    Average FPS: 65.8
-   ⚡ GPU-accelerated with FP16
+   GPU-accelerated with FP16
 ```
 
 **Expected Results (CPU only):**
 ```
-📊 Results:
+Results:
    Average time: 156.3ms
    Average FPS: 6.4
-   🐌 CPU-only (expect 5-10x slower)
+   CPU-only (expect 5-10x slower)
 ```
 
 ---
 
-## 🎯 CUDA Features Enabled
+## CUDA Features Enabled
 
 ### 1. Automatic Device Selection
 ```python
@@ -183,7 +183,7 @@ classes=[0],      # Person only = fewer computations
 
 ---
 
-## 📦 Requirements.txt Breakdown
+## Requirements.txt Breakdown
 
 ### PyTorch with CUDA (JetPack 6.x)
 ```
@@ -210,7 +210,7 @@ ultralytics
 
 ---
 
-## 🎓 Learn More
+## Learn More
 
 - **PyTorch CUDA Guide**: https://pytorch.org/get-started/locally/
 - **YOLOv11 Docs**: https://docs.ultralytics.com/
@@ -218,7 +218,7 @@ ultralytics
 
 ---
 
-## ✅ Quick Checklist
+## Quick Checklist
 
 Before running the tracker:
 
@@ -231,6 +231,6 @@ Before running the tracker:
 
 ---
 
-**Ready to track!** 🎯
+**Ready to track!** 
 
 Run: `python person_tracking_sentry.py`

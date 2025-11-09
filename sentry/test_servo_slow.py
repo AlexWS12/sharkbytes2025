@@ -16,9 +16,9 @@ print()
 try:
     from adafruit_servokit import ServoKit
     kit = ServoKit(channels=16, address=0x40, frequency=50)
-    print("✓ PCA9685 initialized")
+    print("[OK] PCA9685 initialized")
 except Exception as e:
-    print(f"✗ Failed to initialize PCA9685: {e}")
+    print(f"[FAIL] Failed to initialize PCA9685: {e}")
     sys.exit(1)
 
 print()
@@ -36,30 +36,30 @@ print("Testing CHANNEL 2 (Pan / Horizontal Servo)")
 print("=" * 60)
 print()
 
-print("Starting position: 90° (center)")
+print("Starting position: 90deg (center)")
 kit.servo[2].angle = 90
 time.sleep(2)
 
-print("\nMoving SLOWLY to the LEFT (45°)...")
+print("\nMoving SLOWLY to the LEFT (45deg)...")
 for angle in range(90, 44, -1):
     kit.servo[2].angle = angle
-    print(f"\rAngle: {angle}°  ", end='', flush=True)
+    print(f"\rAngle: {angle}deg  ", end='', flush=True)
     time.sleep(0.1)  # Very slow
 print(" DONE")
 time.sleep(2)
 
-print("\nMoving SLOWLY to the RIGHT (135°)...")
+print("\nMoving SLOWLY to the RIGHT (135deg)...")
 for angle in range(45, 136, 1):
     kit.servo[2].angle = angle
-    print(f"\rAngle: {angle}°  ", end='', flush=True)
+    print(f"\rAngle: {angle}deg  ", end='', flush=True)
     time.sleep(0.1)  # Very slow
 print(" DONE")
 time.sleep(2)
 
-print("\nReturning to CENTER (90°)...")
+print("\nReturning to CENTER (90deg)...")
 for angle in range(135, 89, -1):
     kit.servo[2].angle = angle
-    print(f"\rAngle: {angle}°  ", end='', flush=True)
+    print(f"\rAngle: {angle}deg  ", end='', flush=True)
     time.sleep(0.1)  # Very slow
 print(" DONE")
 time.sleep(1)
@@ -68,10 +68,10 @@ print()
 response = input("Did Channel 2 servo move smoothly? (yes/no): ").lower()
 
 if 'y' in response:
-    print("✓ Channel 2 servo is WORKING")
+    print("[OK] Channel 2 servo is WORKING")
     channel_2_ok = True
 else:
-    print("✗ Channel 2 servo is DEAD or disconnected")
+    print("[FAIL] Channel 2 servo is DEAD or disconnected")
     print("\nPossible causes:")
     print("  1. Servo is damaged/fried")
     print("  2. Servo not connected to channel 2")
@@ -85,30 +85,30 @@ print("Testing CHANNEL 3 (Tilt / Vertical Servo)")
 print("=" * 60)
 print()
 
-print("Starting position: 90° (center)")
+print("Starting position: 90deg (center)")
 kit.servo[3].angle = 90
 time.sleep(2)
 
-print("\nMoving SLOWLY UP (45°)...")
+print("\nMoving SLOWLY UP (45deg)...")
 for angle in range(90, 44, -1):
     kit.servo[3].angle = angle
-    print(f"\rAngle: {angle}°  ", end='', flush=True)
+    print(f"\rAngle: {angle}deg  ", end='', flush=True)
     time.sleep(0.1)  # Very slow
 print(" DONE")
 time.sleep(2)
 
-print("\nMoving SLOWLY DOWN (135°)...")
+print("\nMoving SLOWLY DOWN (135deg)...")
 for angle in range(45, 136, 1):
     kit.servo[3].angle = angle
-    print(f"\rAngle: {angle}°  ", end='', flush=True)
+    print(f"\rAngle: {angle}deg  ", end='', flush=True)
     time.sleep(0.1)  # Very slow
 print(" DONE")
 time.sleep(2)
 
-print("\nReturning to CENTER (90°)...")
+print("\nReturning to CENTER (90deg)...")
 for angle in range(135, 89, -1):
     kit.servo[3].angle = angle
-    print(f"\rAngle: {angle}°  ", end='', flush=True)
+    print(f"\rAngle: {angle}deg  ", end='', flush=True)
     time.sleep(0.1)  # Very slow
 print(" DONE")
 time.sleep(1)
@@ -117,10 +117,10 @@ print()
 response = input("Did Channel 3 servo move smoothly? (yes/no): ").lower()
 
 if 'y' in response:
-    print("✓ Channel 3 servo is WORKING")
+    print("[OK] Channel 3 servo is WORKING")
     channel_3_ok = True
 else:
-    print("✗ Channel 3 servo is DEAD or disconnected")
+    print("[FAIL] Channel 3 servo is DEAD or disconnected")
     channel_3_ok = False
 
 # Final Summary
@@ -131,18 +131,18 @@ print("=" * 60)
 print()
 
 if channel_2_ok and channel_3_ok:
-    print("✓✓ BOTH SERVOS ARE WORKING!")
+    print("[OK][OK] BOTH SERVOS ARE WORKING!")
     print()
     print("If you saw jitter before, it was likely:")
-    print("  • Commands sent too fast")
-    print("  • Power supply issue (voltage sag under load)")
-    print("  • Mechanical binding/friction")
+    print("  - Commands sent too fast")
+    print("  - Power supply issue (voltage sag under load)")
+    print("  - Mechanical binding/friction")
     print()
     print("Hardware is GOOD - software tuning may be needed")
     
 elif channel_3_ok and not channel_2_ok:
-    print("✓ Channel 3 (vertical) is WORKING")
-    print("✗ Channel 2 (horizontal) has a problem")
+    print("[OK] Channel 3 (vertical) is WORKING")
+    print("[FAIL] Channel 2 (horizontal) has a problem")
     print()
     print("Next steps:")
     print("  1. Swap the two servos physically")
@@ -158,13 +158,13 @@ elif channel_3_ok and not channel_2_ok:
     print("  3. Try different power supply (5-6V, 2A minimum)")
     
 elif channel_2_ok and not channel_3_ok:
-    print("✓ Channel 2 (horizontal) is WORKING")
-    print("✗ Channel 3 (vertical) has a problem")
+    print("[OK] Channel 2 (horizontal) is WORKING")
+    print("[FAIL] Channel 3 (vertical) has a problem")
     print()
     print("(Same troubleshooting as above)")
     
 else:
-    print("✗✗ BOTH SERVOS have problems")
+    print("[FAIL][FAIL] BOTH SERVOS have problems")
     print()
     print("Most likely causes:")
     print("  1. Insufficient power supply")

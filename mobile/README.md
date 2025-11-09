@@ -180,23 +180,23 @@ Note: Some features may not work exactly the same on web.
 
 ```
 mobile/
-├── app/                      # Expo Router app directory
-│   ├── _layout.jsx          # Root layout
-│   └── index.jsx            # Main entry point
-├── src/
-│   ├── components/          # Reusable components
-│   │   ├── EventCard.jsx    # Individual event card
-│   │   └── EventDetail.jsx  # Event detail modal
-│   ├── screens/             # Screen components
-│   │   └── ActivityLogScreen.jsx  # Main activity log screen
-│   ├── services/            # API and service layers
-│   │   └── api.service.js   # API client
-│   └── config/              # Configuration
-│       └── api.config.js    # API endpoints and settings
-├── assets/                  # Images, fonts, etc.
-├── package.json
-├── app.json                 # Expo configuration
-└── babel.config.js
++-- app/                      # Expo Router app directory
+|   +-- _layout.jsx          # Root layout
+|   └-- index.jsx            # Main entry point
++-- src/
+|   +-- components/          # Reusable components
+|   |   +-- EventCard.jsx    # Individual event card
+|   |   └-- EventDetail.jsx  # Event detail modal
+|   +-- screens/             # Screen components
+|   |   └-- ActivityLogScreen.jsx  # Main activity log screen
+|   +-- services/            # API and service layers
+|   |   └-- api.service.js   # API client
+|   └-- config/              # Configuration
+|       └-- api.config.js    # API endpoints and settings
++-- assets/                  # Images, fonts, etc.
++-- package.json
++-- app.json                 # Expo configuration
+└-- babel.config.js
 ```
 
 ## API Endpoints Used

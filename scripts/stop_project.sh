@@ -22,7 +22,7 @@ PID_DIR="$PROJECT_ROOT/.pids"
 
 echo ""
 echo -e "${BLUE}========================================${NC}"
-echo -e "${BLUE}   🛑 SharkBytes 2025 - Shutdown${NC}"
+echo -e "${BLUE}    SharkBytes 2025 - Shutdown${NC}"
 echo -e "${BLUE}========================================${NC}"
 echo ""
 
@@ -50,10 +50,10 @@ stop_service() {
             
             # Verify stopped
             if ! ps -p "$pid" > /dev/null 2>&1; then
-                echo -e "${GREEN}   ✓ $service_name stopped${NC}"
+                echo -e "${GREEN}   [OK] $service_name stopped${NC}"
                 ((stopped_count++))
             else
-                echo -e "${RED}   ✗ Failed to stop $service_name${NC}"
+                echo -e "${RED}   [FAIL] Failed to stop $service_name${NC}"
             fi
         else
             echo -e "${YELLOW}$service_name not running${NC}"
@@ -73,17 +73,17 @@ echo ""
 echo -e "${YELLOW}Cleaning up any remaining processes...${NC}"
 
 # Kill uvicorn (backend) - force kill
-pkill -9 -f "uvicorn web.main" 2>/dev/null && echo -e "${GREEN}   ✓ Cleaned up uvicorn processes${NC}" || true
+pkill -9 -f "uvicorn web.main" 2>/dev/null && echo -e "${GREEN}   [OK] Cleaned up uvicorn processes${NC}" || true
 
 # Kill vite (frontend) - force kill
-pkill -9 -f "vite" 2>/dev/null && echo -e "${GREEN}   ✓ Cleaned up vite processes${NC}" || true
+pkill -9 -f "vite" 2>/dev/null && echo -e "${GREEN}   [OK] Cleaned up vite processes${NC}" || true
 
 # Kill node processes running dev server
-pkill -9 -f "npm run dev" 2>/dev/null && echo -e "${GREEN}   ✓ Cleaned up npm processes${NC}" || true
+pkill -9 -f "npm run dev" 2>/dev/null && echo -e "${GREEN}   [OK] Cleaned up npm processes${NC}" || true
 
 echo ""
 if [ $stopped_count -gt 0 ]; then
-    echo -e "${GREEN}🎉 All services stopped successfully!${NC}"
+    echo -e "${GREEN} All services stopped successfully!${NC}"
 else
     echo -e "${YELLOW}No services were running${NC}"
 fi

@@ -37,7 +37,7 @@ def test_analyze_frame(image_path: str):
 
         if response.status_code == 200:
             result = response.json()
-            print("\n✅ SUCCESS")
+            print("\n[OK] SUCCESS")
             print(f"\nEvent ID: {result.get('event_id')}")
             print(f"Timestamp: {result.get('timestamp')}")
             print(f"Severity: {result.get('severity')}")
@@ -49,21 +49,21 @@ def test_analyze_frame(image_path: str):
 
             # Note: image_url would be in the database event record
             # The FrameAnalysisResponse doesn't include it, but it's stored in the DB
-            print("\n✅ Image uploaded to Supabase Storage successfully!")
+            print("\n[OK] Image uploaded to Supabase Storage successfully!")
             print("   (Check the events table for the image_url)")
         else:
-            print("\n❌ ERROR")
+            print("\n[ERROR] ERROR")
             print(f"Response: {response.text}")
 
     except requests.exceptions.ConnectionError:
-        print(f"❌ ERROR: Could not connect to {API_BASE_URL}")
+        print(f"[ERROR] ERROR: Could not connect to {API_BASE_URL}")
         print("Make sure the FastAPI server is running!")
         print("Start it with: uvicorn web.main:app --reload")
         sys.exit(1)
     except FileNotFoundError:
-        print(f"❌ ERROR: Image file not found: {image_path}")
+        print(f"[ERROR] ERROR: Image file not found: {image_path}")
     except Exception as e:
-        print(f"❌ ERROR: {str(e)}")
+        print(f"[ERROR] ERROR: {str(e)}")
 
 def test_health():
     """Test the health endpoint to ensure server is running."""
@@ -73,13 +73,13 @@ def test_health():
     try:
         response = requests.get(endpoint)
         if response.status_code == 200:
-            print("✅ Server is running and healthy")
+            print("[OK] Server is running and healthy")
             return True
         else:
-            print(f"⚠️  Server responded but with status: {response.status_code}")
+            print(f"[WARNING]  Server responded but with status: {response.status_code}")
             return False
     except requests.exceptions.ConnectionError:
-        print(f"❌ Cannot connect to {API_BASE_URL}")
+        print(f"[ERROR] Cannot connect to {API_BASE_URL}")
         print("Please start the server with: uvicorn web.main:app --reload")
         return False
 
@@ -96,7 +96,7 @@ def main():
     # Get all test images
     test_dir = Path(TEST_IMAGES_DIR)
     if not test_dir.exists():
-        print(f"❌ Test images directory not found: {TEST_IMAGES_DIR}")
+        print(f"[ERROR] Test images directory not found: {TEST_IMAGES_DIR}")
         sys.exit(1)
 
     # Test specific images (4, 5, and 6)
@@ -109,7 +109,7 @@ def main():
     # Check if all images exist
     missing_images = [img for img in image_files if not img.exists()]
     if missing_images:
-        print("❌ Missing test images:")
+        print("[ERROR] Missing test images:")
         for img in missing_images:
             print(f"   - {img}")
         sys.exit(1)

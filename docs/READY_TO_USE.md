@@ -1,4 +1,4 @@
-# ✅ SharkBytes 2025 - Ready to Use!
+#  SharkBytes 2025 - Ready to Use!
 
 Your complete person-tracking sentry project is now set up with easy management scripts!
 
@@ -24,13 +24,13 @@ Your complete person-tracking sentry project is now set up with easy management 
 Once started (using `./start_project.sh`):
 
 - **📱 Frontend Dashboard:** http://localhost:5173
-- **🔧 Backend API:** http://localhost:5000/docs
+- ** Backend API:** http://localhost:5000/docs
 - **📹 Video Feed:** http://localhost:5000/video_feed
-- **📊 Sentry Stats:** http://localhost:5000/sentry/stats
+- ** Sentry Stats:** http://localhost:5000/sentry/stats
 
 ## ✨ What's Working
 
-✅ **Backend (FastAPI)** - Running on port 5000
+ **Backend (FastAPI)** - Running on port 5000
   - Sentry service with camera tracking
   - Face detection (yellow circles on faces)
   - Person tracking with DeepSORT
@@ -38,20 +38,20 @@ Once started (using `./start_project.sh`):
   - Event logging to Supabase
   - Video streaming endpoint
 
-✅ **Frontend (React/Vite)** - Running on port 5173
+ **Frontend (React/Vite)** - Running on port 5173
   - Live video feed with face indicators
   - Real-time anomaly log
   - Camera controls
   - Responsive UI
 
-✅ **Sentry Service** (Embedded in backend)
+ **Sentry Service** (Embedded in backend)
   - YOLOv11 person detection
   - Face detection with Haar Cascade
   - DeepSORT target tracking
   - PCA9685 servo control
   - Real-time video processing
 
-## 📋 Features
+##  Features
 
 ### Camera View
 - Live MJPEG video stream
@@ -73,21 +73,21 @@ Once started (using `./start_project.sh`):
 - Real-time updates every 5 seconds
 - Camera control interface
 
-## 📁 Important Files
+##  Important Files
 
 ```
 sharkbytes2025/
-├── start_project.sh     ⭐ Start everything
-├── stop_project.sh      🛑 Stop everything
-├── status_project.sh    📊 Check status
-├── PROJECT_SCRIPTS.md   📖 Detailed documentation
-├── logs/                📝 Application logs
-│   ├── backend.log
-│   └── frontend.log
-├── .pids/               🔢 Process IDs
-├── web/                 🔧 Backend code
-├── frontend/            📱 Frontend code
-└── sentry/              📹 Sentry code
++-- start_project.sh     ⭐ Start everything
++-- stop_project.sh       Stop everything
++-- status_project.sh     Check status
++-- PROJECT_SCRIPTS.md   📖 Detailed documentation
++-- logs/                 Application logs
+|   +-- backend.log
+|   └-- frontend.log
++-- .pids/               🔢 Process IDs
++-- web/                  Backend code
++-- frontend/            📱 Frontend code
+└-- sentry/              📹 Sentry code
 ```
 
 ## 🔍 Monitoring
@@ -152,7 +152,7 @@ Edit: `frontend/src/App.jsx` and component files
 ### Add new API endpoints
 Edit: `web/main.py`
 
-## 🚀 Next Steps
+##  Next Steps
 
 1. **Test it out:**
    ```bash
@@ -179,4 +179,4 @@ For detailed documentation, see:
 
 ---
 
-**Have fun with your person-tracking sentry! 🦈📹**
+**Have fun with your person-tracking sentry! 📹**

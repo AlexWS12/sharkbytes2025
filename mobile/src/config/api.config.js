@@ -4,7 +4,7 @@
 // Example: 'http://192.168.1.100:8000'
 
 export const API_CONFIG = {
-  BASE_URL: 'http://192.168.4.32:8000', // Change to your IP address for device testing
+  BASE_URL: 'http://192.168.1.154:5000', // Change to your IP address for device testing
   POLLING_INTERVAL: 5000, // 5 seconds
   DEFAULT_LIMIT: 50,
   TIMEOUT: 10000, // 10 seconds

@@ -34,7 +34,7 @@ mkdir -p "$PID_DIR"
 
 echo ""
 echo -e "${BLUE}========================================${NC}"
-echo -e "${BLUE}   🦈 SharkBytes 2025 - Startup${NC}"
+echo -e "${BLUE}    SharkBytes 2025 - Startup${NC}"
 echo -e "${BLUE}========================================${NC}"
 echo ""
 
@@ -67,7 +67,7 @@ kill_service() {
 }
 
 # Clean up old processes
-echo -e "${YELLOW}🧹 Cleaning up old processes...${NC}"
+echo -e "${YELLOW} Cleaning up old processes...${NC}"
 kill_service "backend"
 kill_service "frontend"
 pkill -f "uvicorn web.main" 2>/dev/null || true
@@ -76,14 +76,14 @@ sleep 2
 
 # Check for virtual environment
 if [ ! -d "sentry_env" ]; then
-    echo -e "${RED}❌ Error: Virtual environment not found!${NC}"
+    echo -e "${RED}[ERROR] Error: Virtual environment not found!${NC}"
     echo -e "${YELLOW}Please run: ./setup_venv.sh${NC}"
     exit 1
 fi
 
 # Check for node_modules in frontend
 if [ ! -d "frontend/node_modules" ]; then
-    echo -e "${YELLOW}📦 Installing frontend dependencies...${NC}"
+    echo -e "${YELLOW} Installing frontend dependencies...${NC}"
     cd frontend
     npm install
     cd ..
@@ -91,7 +91,7 @@ fi
 
 # Check if .env exists
 if [ ! -f ".env" ]; then
-    echo -e "${YELLOW}⚠️  Warning: .env file not found${NC}"
+    echo -e "${YELLOW}[WARNING]️  Warning: .env file not found${NC}"
     echo -e "${YELLOW}Backend database features may not work${NC}"
 fi
 
@@ -115,12 +115,12 @@ echo $BACKEND_PID > "$PID_DIR/backend.pid"
 sleep 3
 
 if ps -p $BACKEND_PID > /dev/null 2>&1; then
-    echo -e "${GREEN}   ✓ Backend started${NC} (PID: $BACKEND_PID)"
-    echo -e "     ${BLUE}→${NC} http://localhost:5000"
-    echo -e "     ${BLUE}→${NC} API docs: http://localhost:5000/docs"
-    echo -e "     ${BLUE}→${NC} Logs: $LOG_DIR/backend.log"
+    echo -e "${GREEN}   [OK] Backend started${NC} (PID: $BACKEND_PID)"
+    echo -e "     ${BLUE}-->${NC} http://localhost:5000"
+    echo -e "     ${BLUE}-->${NC} API docs: http://localhost:5000/docs"
+    echo -e "     ${BLUE}-->${NC} Logs: $LOG_DIR/backend.log"
 else
-    echo -e "${RED}   ✗ Backend failed to start${NC}"
+    echo -e "${RED}   [FAIL] Backend failed to start${NC}"
     echo -e "${YELLOW}   Check logs: $LOG_DIR/backend.log${NC}"
     exit 1
 fi
@@ -142,27 +142,27 @@ cd ..
 sleep 3
 
 if ps -p $FRONTEND_PID > /dev/null 2>&1; then
-    echo -e "${GREEN}   ✓ Frontend started${NC} (PID: $FRONTEND_PID)"
-    echo -e "     ${BLUE}→${NC} http://localhost:5173"
-    echo -e "     ${BLUE}→${NC} Logs: $LOG_DIR/frontend.log"
+    echo -e "${GREEN}   [OK] Frontend started${NC} (PID: $FRONTEND_PID)"
+    echo -e "     ${BLUE}-->${NC} http://localhost:5173"
+    echo -e "     ${BLUE}-->${NC} Logs: $LOG_DIR/frontend.log"
 else
-    echo -e "${RED}   ✗ Frontend failed to start${NC}"
+    echo -e "${RED}   [FAIL] Frontend failed to start${NC}"
     echo -e "${YELLOW}   Check logs: $LOG_DIR/frontend.log${NC}"
 fi
 
 echo ""
 echo -e "${BLUE}========================================${NC}"
-echo -e "${GREEN}🎉 All services started successfully!${NC}"
+echo -e "${GREEN} All services started successfully!${NC}"
 echo -e "${BLUE}========================================${NC}"
 echo ""
 echo -e "${GREEN}Services running:${NC}"
-echo -e "  • Backend:  http://localhost:5000"
-echo -e "  • Frontend: http://localhost:5173"
-echo -e "  • Sentry:   Embedded in backend (camera + tracking)"
+echo -e "  - Backend:  http://localhost:5000"
+echo -e "  - Frontend: http://localhost:5173"
+echo -e "  - Sentry:   Embedded in backend (camera + tracking)"
 echo ""
 echo -e "${YELLOW}Logs location:${NC}"
-echo -e "  • Backend:  $LOG_DIR/backend.log"
-echo -e "  • Frontend: $LOG_DIR/frontend.log"
+echo -e "  - Backend:  $LOG_DIR/backend.log"
+echo -e "  - Frontend: $LOG_DIR/frontend.log"
 echo ""
 echo -e "${YELLOW}To view logs:${NC}"
 echo -e "  tail -f $LOG_DIR/backend.log"

@@ -17,7 +17,7 @@ from pathlib import Path
 
 sys.path.append(os.path.dirname(__file__))  # ensures local imports work
 
-# ✅ Import alert function
+# Import alert function
 from alerts import send_discord_alert
 
 # Add gemini and sentry modules to path
@@ -356,7 +356,7 @@ def create_event(event: EventCreate):
 
         response = supabase.table("events").insert(event_data).execute()
 
-        # ✅ Send Discord alert (only warnings/critical)
+        # Send Discord alert (only warnings/critical)
         if event_data["severity"] in ["warning", "critical"]:
             send_discord_alert(
                 event_type=event_data["event_type"],
@@ -443,7 +443,7 @@ async def analyze_frame(file: UploadFile = File(...)):
 
         db_response = supabase.table("events").insert(event_data).execute()
 
-        # ✅ Send Discord alert for warning/critical results
+        # Send Discord alert for warning/critical results
         if severity in ["warning", "critical"]:
             send_discord_alert(
                 event_type=event_data["event_type"],

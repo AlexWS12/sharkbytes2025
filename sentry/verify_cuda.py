@@ -23,31 +23,31 @@ def check_pytorch():
     # Check PyTorch
     try:
         import torch
-        print(f"✅ PyTorch installed: {torch.__version__}")
+        print(f"[OK] PyTorch installed: {torch.__version__}")
     except ImportError:
-        print("❌ PyTorch not installed!")
+        print("[ERROR] PyTorch not installed!")
         print("\nInstall with:")
         print("  pip install -r requirements.txt")
         return False
     
     # Check CUDA
     if torch.cuda.is_available():
-        print(f"✅ CUDA available: YES")
+        print(f"[OK] CUDA available: YES")
         print(f"   CUDA Version: {torch.version.cuda}")
         print(f"   cuDNN Version: {torch.backends.cudnn.version()}")
         print(f"   GPU Device: {torch.cuda.get_device_name(0)}")
         print(f"   GPU Memory: {torch.cuda.get_device_properties(0).total_memory / 1024**3:.2f} GB")
         print(f"   Compute Capability: {torch.cuda.get_device_capability(0)}")
     else:
-        print("⚠️  CUDA not available - will use CPU (slower)")
+        print("[WARNING]  CUDA not available - will use CPU (slower)")
         print("   This is normal on non-GPU systems")
     
     # Check TorchVision
     try:
         import torchvision
-        print(f"✅ TorchVision installed: {torchvision.__version__}")
+        print(f"[OK] TorchVision installed: {torchvision.__version__}")
     except ImportError:
-        print("⚠️  TorchVision not installed")
+        print("[WARNING]  TorchVision not installed")
     
     print()
     return True
@@ -61,12 +61,12 @@ def check_yolo():
     
     try:
         from ultralytics import YOLO
-        print("✅ Ultralytics installed")
+        print("[OK] Ultralytics installed")
         
         # Try loading model
         print("\nLoading YOLOv11n model...")
         model = YOLO('../models/yolo11n.pt')
-        print("✅ YOLOv11n model loaded successfully")
+        print("[OK] YOLOv11n model loaded successfully")
         
         # Check device
         import torch
@@ -76,12 +76,12 @@ def check_yolo():
         return True
         
     except ImportError:
-        print("❌ Ultralytics not installed!")
+        print("[ERROR] Ultralytics not installed!")
         print("\nInstall with:")
         print("  pip install ultralytics")
         return False
     except Exception as e:
-        print(f"❌ Error loading YOLO model: {e}")
+        print(f"[ERROR] Error loading YOLO model: {e}")
         return False
 
 
@@ -131,19 +131,19 @@ def benchmark_inference():
         avg_time = np.mean(times)
         avg_fps = 1.0 / avg_time
         
-        print(f"\n📊 Results:")
+        print(f"\n Results:")
         print(f"   Average time: {avg_time*1000:.1f}ms")
         print(f"   Average FPS: {avg_fps:.1f}")
         
         if torch.cuda.is_available():
-            print(f"   ⚡ GPU-accelerated with FP16")
+            print(f"    GPU-accelerated with FP16")
         else:
             print(f"   🐌 CPU-only (expect 5-10x slower)")
         
         return True
         
     except Exception as e:
-        print(f"❌ Benchmark failed: {e}")
+        print(f"[ERROR] Benchmark failed: {e}")
         return False
 
 
@@ -164,9 +164,9 @@ def check_dependencies():
     for module, package in deps:
         try:
             __import__(module)
-            print(f"✅ {package}")
+            print(f"[OK] {package}")
         except ImportError:
-            print(f"❌ {package} not installed")
+            print(f"[ERROR] {package} not installed")
             all_ok = False
     
     return all_ok
@@ -197,16 +197,16 @@ def main():
     print("="*60)
     
     for name, success in results:
-        status = "✅ PASS" if success else "❌ FAIL"
+        status = "[OK] PASS" if success else "[ERROR] FAIL"
         print(f"{status} - {name}")
     
     all_passed = all(success for _, success in results)
     
     print("\n" + "="*60)
     if all_passed:
-        print("🎉 All checks passed! System ready for tracking.")
+        print(" All checks passed! System ready for tracking.")
     else:
-        print("⚠️  Some checks failed. Install missing dependencies:")
+        print("[WARNING]  Some checks failed. Install missing dependencies:")
         print("   pip install -r requirements.txt")
     print("="*60 + "\n")
     

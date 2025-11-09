@@ -859,13 +859,13 @@ class SentryService:
                     
                     # Print summary
                     if result['status'] == 'success':
-                        severity_emoji = {
-                            'info': 'ℹ️',
-                            'warning': '⚠️',
-                            'critical': '🚨'
+                        severity_prefix = {
+                            'info': '[INFO]',
+                            'warning': '[WARNING]',
+                            'critical': '[CRITICAL]'
                         }
-                        emoji = severity_emoji.get(result.get('severity', 'info'), 'ℹ️')
-                        print(f"[GEMINI] {emoji} {result['analysis']}")
+                        prefix = severity_prefix.get(result.get('severity', 'info'), '[INFO]')
+                        print(f"[GEMINI] {prefix} {result['analysis']}")
                         
                         # Upload to Supabase
                         try:
@@ -908,7 +908,7 @@ class SentryService:
                         except Exception as e:
                             print(f"[SUPABASE] Error uploading snapshot: {e}")
                     else:
-                        print(f"[GEMINI] ❌ Analysis failed: {result.get('error', 'Unknown error')}")
+                        print(f"[GEMINI] [ERROR] Analysis failed: {result.get('error', 'Unknown error')}")
                 
                 finally:
                     # Clean up temporary file

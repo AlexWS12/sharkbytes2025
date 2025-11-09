@@ -2,7 +2,7 @@
 
 # Fix "EMFILE: too many open files" error on macOS
 
-echo "🔧 Fixing file watcher limits..."
+echo " Fixing file watcher limits..."
 echo ""
 
 # Check current limit
@@ -19,7 +19,7 @@ echo "New limit: $NEW"
 echo ""
 
 if [ $NEW -ge 4096 ]; then
-    echo "✅ File limit increased successfully!"
+    echo "[OK] File limit increased successfully!"
     echo ""
     echo "Now run:"
     echo "  npm start"
@@ -27,6 +27,6 @@ if [ $NEW -ge 4096 ]; then
     echo "To make this permanent, add to ~/.zshrc:"
     echo "  echo 'ulimit -n 4096' >> ~/.zshrc"
 else
-    echo "⚠️  Failed to increase limit. Try:"
+    echo "[WARNING]  Failed to increase limit. Try:"
     echo "  sudo launchctl limit maxfiles 65536 200000"
 fi

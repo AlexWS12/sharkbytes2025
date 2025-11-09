@@ -22,7 +22,7 @@ PID_DIR="$PROJECT_ROOT/.pids"
 
 echo ""
 echo -e "${BLUE}========================================${NC}"
-echo -e "${BLUE}   📊 SharkBytes 2025 - Status${NC}"
+echo -e "${BLUE}    SharkBytes 2025 - Status${NC}"
 echo -e "${BLUE}========================================${NC}"
 echo ""
 
@@ -39,25 +39,25 @@ check_service() {
     if [ -f "$pid_file" ]; then
         local pid=$(cat "$pid_file")
         if ps -p "$pid" > /dev/null 2>&1; then
-            echo -e "${GREEN}✓ $service_name${NC} (PID: $pid)"
+            echo -e "${GREEN}[OK] $service_name${NC} (PID: $pid)"
             
             # Check if port is listening
             if [ -n "$port" ]; then
                 if netstat -tuln 2>/dev/null | grep -q ":$port "; then
-                    echo -e "  ${BLUE}→${NC} Listening on port $port"
+                    echo -e "  ${BLUE}-->${NC} Listening on port $port"
                 else
-                    echo -e "  ${YELLOW}⚠${NC} Process running but port $port not listening"
+                    echo -e "  ${YELLOW}[WARNING]${NC} Process running but port $port not listening"
                 fi
             fi
             
             ((running_count++))
             return 0
         else
-            echo -e "${RED}✗ $service_name${NC} (Not running, stale PID file)"
+            echo -e "${RED}[FAIL] $service_name${NC} (Not running, stale PID file)"
             return 1
         fi
     else
-        echo -e "${RED}✗ $service_name${NC} (Not running)"
+        echo -e "${RED}[FAIL] $service_name${NC} (Not running)"
         return 1
     fi
 }
@@ -71,12 +71,12 @@ echo ""
 # Check camera access
 echo -e "${YELLOW}Camera Status:${NC}"
 if lsof /dev/video0 2>/dev/null | grep -q "python"; then
-    echo -e "  ${GREEN}✓${NC} Camera in use by backend sentry service"
+    echo -e "  ${GREEN}[OK]${NC} Camera in use by backend sentry service"
 elif lsof /dev/video0 2>/dev/null; then
-    echo -e "  ${YELLOW}⚠${NC} Camera in use by another process"
+    echo -e "  ${YELLOW}[WARNING]${NC} Camera in use by another process"
     lsof /dev/video0 2>/dev/null | tail -n +2
 else
-    echo -e "  ${RED}✗${NC} Camera not in use"
+    echo -e "  ${RED}[FAIL]${NC} Camera not in use"
 fi
 
 echo ""
@@ -84,7 +84,7 @@ echo ""
 # Summary
 echo -e "${BLUE}========================================${NC}"
 if [ $running_count -eq $total_services ]; then
-    echo -e "${GREEN}All services are running! 🎉${NC}"
+    echo -e "${GREEN}All services are running! ${NC}"
     echo ""
     echo -e "${BLUE}Access the application:${NC}"
     echo -e "  Frontend: http://localhost:5173"

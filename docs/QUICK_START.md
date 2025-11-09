@@ -1,4 +1,4 @@
-# 🚀 Quick Start Guide
+#  Quick Start Guide
 
 ## Launching the Application
 
@@ -17,7 +17,7 @@ All services run in the background with logs saved to `logs/` directory.
 
 ---
 
-## 📊 Managing Services
+##  Managing Services
 
 ### Check Status
 ```bash
@@ -57,7 +57,7 @@ Once running, access the application at:
 
 ---
 
-## ⚙️ Prerequisites
+##  Prerequisites
 
 Before starting, ensure you have:
 
@@ -81,7 +81,7 @@ Before starting, ensure you have:
 
 ---
 
-## 🛑 Stopping the Services
+##  Stopping the Services
 
 Press `Ctrl+C` in each terminal to stop the respective service.
 
@@ -111,7 +111,7 @@ npm install
 
 ---
 
-## 📝 Notes
+##  Notes
 
 - The **backend** must be running for the frontend to fetch data
 - The **sentry** is optional - the frontend will show mock data if it's not running

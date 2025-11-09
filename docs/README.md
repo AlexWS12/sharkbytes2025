@@ -1,7 +1,7 @@
 <<<<<<< HEAD
 # Person-Tracking Sentry - Complete Guide
 
-## 📋 Table of Contents
+##  Table of Contents
 1. [Quick Start](#quick-start)
 2. [Project Structure](#project-structure)
 3. [Module Architecture](#module-architecture)
@@ -13,7 +13,7 @@
 
 ---
 
-## 🚀 Quick Start
+##  Quick Start
 
 ### Running the System
 ```bash
@@ -31,31 +31,31 @@ Edit `config/settings.py` for all adjustable parameters.
 
 ---
 
-## 📁 Project Structure
+##  Project Structure
 
 ```
 sharkbytes2025/
-├── person_tracking_sentry.py    # Main entry point (launcher)
-├── requirements.txt               # Python dependencies
-├── README.md                      # This file - complete guide
-├── CONTROLS.md                    # Detailed keyboard controls
-├── TUNING_GUIDE.md                # Parameter optimization tips
-│
-├── config/                        # Configuration package
-│   ├── __init__.py
-│   └── settings.py                # All tunable parameters
-│
-├── src/                           # Source code package
-│   ├── __init__.py
-│   ├── detector.py                # YOLO person detection
-│   ├── tracker.py                 # DeepSORT object tracking
-│   ├── servo_controller.py        # PCA9685 servo control
-│   ├── target_tracker.py          # Target locking logic
-│   └── sentry.py                  # Main sentry system
-│
-└── utils/                         # Utility functions package
-    ├── __init__.py
-    └── ui_utils.py                # UI drawing functions
++-- person_tracking_sentry.py    # Main entry point (launcher)
++-- requirements.txt               # Python dependencies
++-- README.md                      # This file - complete guide
++-- CONTROLS.md                    # Detailed keyboard controls
++-- TUNING_GUIDE.md                # Parameter optimization tips
+|
++-- config/                        # Configuration package
+|   +-- __init__.py
+|   └-- settings.py                # All tunable parameters
+|
++-- src/                           # Source code package
+|   +-- __init__.py
+|   +-- detector.py                # YOLO person detection
+|   +-- tracker.py                 # DeepSORT object tracking
+|   +-- servo_controller.py        # PCA9685 servo control
+|   +-- target_tracker.py          # Target locking logic
+|   └-- sentry.py                  # Main sentry system
+|
+└-- utils/                         # Utility functions package
+    +-- __init__.py
+    └-- ui_utils.py                # UI drawing functions
 ```
 
 ---
@@ -66,14 +66,14 @@ sharkbytes2025/
 
 ```
 person_tracking_sentry.py (Entry Point)
-           │
-           └─> PersonTrackingSentry
-                      │
-                      ├─> PersonDetector (YOLO)
-                      ├─> ObjectTracker (DeepSORT)
-                      ├─> ServoController (PCA9685)
-                      ├─> TargetTracker (State Logic)
-                      └─> UI Utils (Drawing)
+           |
+           └-> PersonTrackingSentry
+                      |
+                      +-> PersonDetector (YOLO)
+                      +-> ObjectTracker (DeepSORT)
+                      +-> ServoController (PCA9685)
+                      +-> TargetTracker (State Logic)
+                      └-> UI Utils (Drawing)
 ```
 
 ### Data Flow
@@ -81,17 +81,17 @@ person_tracking_sentry.py (Entry Point)
 ```
 Camera Frame
      ↓
-PersonDetector → Raw Detections [x1, y1, x2, y2, conf]
+PersonDetector --> Raw Detections [x1, y1, x2, y2, conf]
      ↓
-ObjectTracker → Tracked Objects [{id, bbox}, ...]
+ObjectTracker --> Tracked Objects [{id, bbox}, ...]
      ↓
-TargetTracker → Select/Lock Target ID
+TargetTracker --> Select/Lock Target ID
      ↓
-PD Control → Calculate Servo Movements
+PD Control --> Calculate Servo Movements
      ↓
-ServoController → Smooth Movement
+ServoController --> Smooth Movement
      ↓
-Hardware → Servos Move
+Hardware --> Servos Move
 ```
 
 ### Module Responsibilities
@@ -108,7 +108,7 @@ Hardware → Servos Move
 
 ---
 
-## ⚙️ Configuration
+##  Configuration
 
 All settings are in `config/settings.py`. Key sections:
 
@@ -181,7 +181,7 @@ TARGET_LOST_TIMEOUT = 2.0  # Seconds before unlocking
 
 ---
 
-## 🔧 Tuning & Optimization
+##  Tuning & Optimization
 
 ### For Smoother Motion
 ```python
@@ -206,7 +206,7 @@ CAMERA_HEIGHT = 240
 YOLO_CONFIDENCE = 0.40   # Higher threshold = fewer detections
 ```
 
-### Current Optimizations ✅
+### Current Optimizations 
 - Exponential smoothing for gimbal-like motion
 - PD control prevents overshoot
 - Step limiting prevents jerky movement
@@ -338,7 +338,7 @@ RuntimeError: Failed to open camera at /dev/video0
 
 ---
 
-## 📦 Dependencies
+##  Dependencies
 
 ### Required Packages
 ```
@@ -364,18 +364,18 @@ pip install -r requirements.txt
 
 ## 🌟 Features
 
-✅ **Smooth Motion Control** - Exponential smoothing + PD control  
-✅ **Automatic Tracking** - Locks onto first person detected  
-✅ **Manual Override** - Full keyboard control  
-✅ **Modular Design** - Easy to customize and extend  
-✅ **Real-time Performance** - Optimized for 15-30 FPS  
-✅ **YOLOv11** - Latest detection model for accuracy  
-✅ **DeepSORT** - Robust multi-object tracking  
-✅ **Visual Feedback** - On-screen status and bounding boxes  
+ **Smooth Motion Control** - Exponential smoothing + PD control  
+ **Automatic Tracking** - Locks onto first person detected  
+ **Manual Override** - Full keyboard control  
+ **Modular Design** - Easy to customize and extend  
+ **Real-time Performance** - Optimized for 15-30 FPS  
+ **YOLOv11** - Latest detection model for accuracy  
+ **DeepSORT** - Robust multi-object tracking  
+ **Visual Feedback** - On-screen status and bounding boxes  
 
 ---
 
-## 📚 Additional Files
+##  Additional Files
 
 - **CONTROLS.md** - Detailed keyboard controls reference
 - **TUNING_GUIDE.md** - Performance optimization guide  
@@ -386,13 +386,13 @@ pip install -r requirements.txt
 
 ## 🏆 Benefits of Modular Structure
 
-✅ **Separation of Concerns** - Each module has one clear responsibility  
-✅ **Easy Testing** - Test modules independently  
-✅ **Reusability** - Import modules in other projects  
-✅ **Maintainability** - Changes are localized  
-✅ **Readability** - Smaller, focused files  
-✅ **Configuration** - All settings in one place  
-✅ **Scalability** - Easy to add new features  
+ **Separation of Concerns** - Each module has one clear responsibility  
+ **Easy Testing** - Test modules independently  
+ **Reusability** - Import modules in other projects  
+ **Maintainability** - Changes are localized  
+ **Readability** - Smaller, focused files  
+ **Configuration** - All settings in one place  
+ **Scalability** - Easy to add new features  
 
 ---
 

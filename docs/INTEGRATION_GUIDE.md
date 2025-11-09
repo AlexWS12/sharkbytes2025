@@ -8,38 +8,38 @@ We've integrated your person-tracking sentry system directly into FastAPI with *
 
 ```
 FastAPI Server (port 5000)
-│
-├── Sentry Service (background thread)
-│   ├── OpenCV camera capture
-│   ├── YOLO person detection
-│   ├── DeepSORT tracking
-│   ├── Servo control
-│   └── Frame annotation (bounding boxes, crosshairs, stats)
-│
-├── /video_feed endpoint
-│   └── MJPEG streaming of annotated frames
-│
-├── /control endpoint
-│   └── Send commands to sentry (pan, tilt, lock, center)
-│
-└── /sentry/stats endpoint
-    └── Get real-time stats (FPS, tracking status, servo angles)
+|
++-- Sentry Service (background thread)
+|   +-- OpenCV camera capture
+|   +-- YOLO person detection
+|   +-- DeepSORT tracking
+|   +-- Servo control
+|   └-- Frame annotation (bounding boxes, crosshairs, stats)
+|
++-- /video_feed endpoint
+|   └-- MJPEG streaming of annotated frames
+|
++-- /control endpoint
+|   └-- Send commands to sentry (pan, tilt, lock, center)
+|
+└-- /sentry/stats endpoint
+    └-- Get real-time stats (FPS, tracking status, servo angles)
 ```
 
 ---
 
 ## ✨ Features
 
-✅ **Single Camera Source** - No conflicts, one system
-✅ **Real-time MJPEG Streaming** - Works with HTML `<img>` tags
-✅ **Full Annotations** - See tracking boxes, crosshairs, stats overlaid
-✅ **Remote Control** - Frontend buttons directly control servos
-✅ **Background Processing** - Runs as a thread, doesn't block API
-✅ **Graceful Degradation** - Shows placeholder if sentry unavailable
+ **Single Camera Source** - No conflicts, one system
+ **Real-time MJPEG Streaming** - Works with HTML `<img>` tags
+ **Full Annotations** - See tracking boxes, crosshairs, stats overlaid
+ **Remote Control** - Frontend buttons directly control servos
+ **Background Processing** - Runs as a thread, doesn't block API
+ **Graceful Degradation** - Shows placeholder if sentry unavailable
 
 ---
 
-## 🚀 How to Run
+##  How to Run
 
 ### Option 1: Quick Start (All at once)
 ```bash
@@ -62,7 +62,7 @@ FastAPI Server (port 5000)
 
 ---
 
-## 🔧 What Changed
+##  What Changed
 
 ### 1. New File: `sentry/sentry_service.py`
 - Refactored `PersonTrackingSentry` into a reusable service
@@ -203,12 +203,12 @@ Click the camera control buttons:
 
 ## 🎯 Benefits of This Approach
 
-✅ **Production Ready** - Single integrated system
-✅ **Scalable** - Easy to add more features
-✅ **Maintainable** - One codebase, not two separate scripts
-✅ **Remote Access** - Control camera from anywhere on your network
-✅ **Real-time** - Low latency streaming
-✅ **Annotated** - See exactly what the AI sees
+ **Production Ready** - Single integrated system
+ **Scalable** - Easy to add more features
+ **Maintainable** - One codebase, not two separate scripts
+ **Remote Access** - Control camera from anywhere on your network
+ **Real-time** - Low latency streaming
+ **Annotated** - See exactly what the AI sees
 
 ---
 
@@ -222,7 +222,7 @@ Click the camera control buttons:
 
 ---
 
-## 📝 Notes
+##  Notes
 
 - The old `person_tracking_sentry.py` still exists for standalone use
 - The new `sentry_service.py` is the integrated version

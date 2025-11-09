@@ -28,7 +28,7 @@ echo ""
 
 # Check if running on Jetson
 if ! command -v jetson_release &> /dev/null; then
-    echo "⚠️  Warning: jetson_release not found."
+    echo "[WARNING]  Warning: jetson_release not found."
     echo "   This script is designed for NVIDIA Jetson devices."
     read -p "   Continue anyway? (y/n) " -n 1 -r
     echo
@@ -40,12 +40,12 @@ fi
 
 # Check Python version
 PYTHON_VERSION=$(python3 --version 2>&1 | awk '{print $2}')
-echo "✓ Python version: $PYTHON_VERSION"
+echo "[OK] Python version: $PYTHON_VERSION"
 
 # Check if virtual environment already exists
 if [ -d "sentry_env" ]; then
     echo ""
-    echo "⚠️  Virtual environment 'sentry_env' already exists."
+    echo "[WARNING]  Virtual environment 'sentry_env' already exists."
     read -p "   Delete and recreate? (y/n) " -n 1 -r
     echo
     if [[ $REPLY =~ ^[Yy]$ ]]; then
@@ -78,13 +78,13 @@ sudo apt-get install -y \
     libjpeg-dev \
     zlib1g-dev
 
-echo "✓ System dependencies installed"
+echo "[OK] System dependencies installed"
 
 # Enable I2C if not already enabled
 if ! groups | grep -q "i2c"; then
     echo "Adding user to i2c group..."
     sudo usermod -aG i2c $USER
-    echo "⚠️  Note: You may need to log out and back in for i2c group to take effect"
+    echo "[WARNING]  Note: You may need to log out and back in for i2c group to take effect"
 fi
 
 # ========================================
@@ -99,9 +99,9 @@ echo ""
 if [ ! -d "sentry_env" ]; then
     echo "Creating Python virtual environment..."
     python3 -m venv sentry_env
-    echo "✓ Virtual environment created"
+    echo "[OK] Virtual environment created"
 else
-    echo "✓ Virtual environment already exists"
+    echo "[OK] Virtual environment already exists"
 fi
 
 # Activate virtual environment
@@ -123,7 +123,7 @@ pip install --upgrade pip
 echo "Installing NumPy (Jetson-compatible version <2.0)..."
 pip install --no-cache-dir "numpy<2"
 
-echo "✓ Base packages installed"
+echo "[OK] Base packages installed"
 
 # ========================================
 # STEP 4: PyTorch with CUDA (JetPack 6.x)
@@ -162,10 +162,10 @@ print(f"CUDA Available: {torch.cuda.is_available()}")
 if torch.cuda.is_available():
     print(f"CUDA Device: {torch.cuda.get_device_name(0)}")
 else:
-    print("⚠️  CUDA not available - may need to check installation")
+    print("[WARNING]  CUDA not available - may need to check installation")
 PYEOF
 
-echo "✓ PyTorch with CUDA installed"
+echo "[OK] PyTorch with CUDA installed"
 
 # ========================================
 # STEP 5: Application Dependencies
@@ -193,7 +193,7 @@ pip install adafruit-circuitpython-servokit
 pip install adafruit-circuitpython-pca9685
 pip install Jetson.GPIO
 
-echo "✓ All application packages installed"
+echo "[OK] All application packages installed"
 
 # ========================================
 # Verification
@@ -212,7 +212,7 @@ print(f"PyTorch:     {torch.__version__} (CUDA {torch.version.cuda})")
 print(f"TorchVision: {torchvision.__version__}")
 print(f"NumPy:       {np.__version__}")
 print(f"OpenCV:      {cv2.__version__}")
-print(f"CUDA:        {'✓ Available' if torch.cuda.is_available() else '✗ Not Available'}")
+print(f"CUDA:        {'[OK] Available' if torch.cuda.is_available() else '[FAIL] Not Available'}")
 if torch.cuda.is_available():
     print(f"GPU:         {torch.cuda.get_device_name(0)}")
 VEREOF
@@ -231,9 +231,9 @@ echo ""
 
 echo "Checking for camera..."
 if [ -e /dev/video0 ]; then
-    echo "✓ Camera found at /dev/video0"
+    echo "[OK] Camera found at /dev/video0"
 else
-    echo "⚠️  No camera found at /dev/video0"
+    echo "[WARNING]  No camera found at /dev/video0"
 fi
 
 echo ""
@@ -241,13 +241,13 @@ echo "Checking for PCA9685 on I2C..."
 if command -v i2cdetect &> /dev/null; then
     echo "Scanning I2C bus 1..."
     if sudo i2cdetect -y 1 | grep -q "40"; then
-        echo "✓ PCA9685 found at address 0x40"
+        echo "[OK] PCA9685 found at address 0x40"
     else
-        echo "⚠️  PCA9685 not detected at 0x40"
+        echo "[WARNING]  PCA9685 not detected at 0x40"
         echo "   Make sure it's connected and powered"
     fi
 else
-    echo "⚠️  i2cdetect not available, skipping I2C check"
+    echo "[WARNING]  i2cdetect not available, skipping I2C check"
 fi
 
 # ========================================
@@ -263,7 +263,7 @@ if [ ! -f "yolo11n.pt" ]; then
     echo "YOLOv11n model will be downloaded on first run."
     echo "This is a ~5.4MB download and will happen automatically."
 else
-    echo "✓ YOLOv11n model already present"
+    echo "[OK] YOLOv11n model already present"
 fi
 
 # ========================================
@@ -271,7 +271,7 @@ fi
 # ========================================
 echo ""
 echo "=========================================="
-echo "✓ Setup Complete!"
+echo "[OK] Setup Complete!"
 echo "=========================================="
 echo ""
 echo "Project Structure:"

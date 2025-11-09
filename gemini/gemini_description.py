@@ -106,10 +106,10 @@ def process_test_images():
         img_path = test_folder / img_name
         
         if not img_path.exists():
-            print(f"⚠️  {img_name} not found, skipping...")
+            print(f"[WARNING] {img_name} not found, skipping...")
             continue
         
-        print(f"📸 Analyzing {img_name}...")
+        print(f"Analyzing {img_name}...")
         print("-" * 60)
         
         result = analyze_security_image(img_path)
@@ -118,7 +118,7 @@ def process_test_images():
         if result["status"] == "success":
             print(result["analysis"])
         else:
-            print(f"❌ Error: {result['error']}")
+            print(f"[ERROR] Error: {result['error']}")
         
         print()
         print("-" * 60)
@@ -129,8 +129,8 @@ def process_test_images():
     with open(output_file, 'w') as f:
         json.dump(results, f, indent=2)
     
-    print(f"✅ Analysis complete! Results saved to {output_file}")
-    print(f"📊 Processed {len(results)} images")
+    print(f"[OK] Analysis complete! Results saved to {output_file}")
+    print(f"Processed {len(results)} images")
 
 if __name__ == "__main__":
     process_test_images()

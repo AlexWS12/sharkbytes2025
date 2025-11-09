@@ -61,8 +61,8 @@ npm run ios
 ## Step 5: Test Connection
 
 The app should show:
-- ✅ Green "LIVE" indicator
-- ✅ List of events (if any exist)
+-  Green "LIVE" indicator
+-  List of events (if any exist)
 
 If you see errors, check:
 - Backend is running

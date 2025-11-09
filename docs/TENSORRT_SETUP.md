@@ -2,7 +2,7 @@
 
 ## Installation Summary
 
-✅ **TensorRT 10.7.0 successfully installed** in virtual environment (`sentry_env`)
+ **TensorRT 10.7.0 successfully installed** in virtual environment (`sentry_env`)
 
 ### What was installed:
 - TensorRT 10.7.0 (system package, symlinked to venv)
@@ -160,13 +160,13 @@ with open('yolo11n_160_fp16.engine', 'wb') as f:
 
 ## Important Notes
 
-⚠️ **Hardware-Specific:** The `.engine` file is compiled for your specific Jetson Orin Nano. Don't copy it to other devices.
+WARNING: **Hardware-Specific:** The `.engine` file is compiled for your specific Jetson Orin Nano. Don't copy it to other devices.
 
-⚠️ **Keep Source Files:** Always keep `yolo11n.pt` and `yolo11n.onnx` as source files. The engine is just an optimized version.
+WARNING: **Keep Source Files:** Always keep `yolo11n.pt` and `yolo11n.onnx` as source files. The engine is just an optimized version.
 
-⚠️ **Image Size:** The engine is built for a specific input size (160x160). If you change `YOLO_IMGSZ`, rebuild the engine.
+WARNING: **Image Size:** The engine is built for a specific input size (160x160). If you change `YOLO_IMGSZ`, rebuild the engine.
 
-⚠️ **Build Time:** Building the engine takes ~10-15 minutes on Jetson Orin Nano. This is a one-time process.
+WARNING: **Build Time:** Building the engine takes ~10-15 minutes on Jetson Orin Nano. This is a one-time process.
 
 ## Why test_tensorrt.py Had an Infinite Loop
 

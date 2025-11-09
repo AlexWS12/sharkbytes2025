@@ -6,7 +6,7 @@ def send_discord_alert(event_type: str, description: str, severity: str, image_u
     """Send an alert message to Discord using an embed."""
     webhook_url = os.getenv("DISCORD_WEBHOOK_URL")
     if not webhook_url:
-        print("⚠️ No Discord webhook URL found in .env")
+        print("[WARNING] No Discord webhook URL found in .env")
         return
 
     severity_emojis = {
@@ -43,6 +43,6 @@ def send_discord_alert(event_type: str, description: str, severity: str, image_u
     try:
         response = requests.post(webhook_url, json=payload)
         response.raise_for_status()
-        print(f"✅ Sent Discord alert: {severity.upper()} - {description[:60]}")
+        print(f"[OK] Sent Discord alert: {severity.upper()} - {description[:60]}")
     except Exception as e:
-        print(f"❌ Failed to send Discord alert: {e}")
+        print(f"[ERROR] Failed to send Discord alert: {e}")
