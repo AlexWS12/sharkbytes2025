@@ -17,7 +17,6 @@ if not GEMINI_API_KEY:
 genai.configure(api_key=GEMINI_API_KEY)
 
 def list_available_models():
-    """List all available models for debugging"""
     print("Available models:")
     for m in genai.list_models():
         if 'generateContent' in m.supported_generation_methods:
@@ -28,15 +27,6 @@ def list_available_models():
 model = genai.GenerativeModel('gemini-2.0-flash')
 
 def analyze_security_image(image_path):
-    """
-    Analyze a security camera image and return a detailed description
-    
-    Args:
-        image_path: Path to the image file
-        
-    Returns:
-        dict: Analysis results including description, detected objects, and timestamp
-    """
     try:
         # Load the image
         img = Image.open(image_path)
@@ -87,9 +77,6 @@ Use 'info' for normal activities, 'warning' for suspicious activities, and 'crit
         }
 
 def process_test_images():
-    """
-    Process all test images in the tests folder
-    """
     test_folder = Path("tests")
     
     
